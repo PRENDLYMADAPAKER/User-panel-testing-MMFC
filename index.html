@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dentistry Student Panel</title>
+  <title>User Panel — Attendance</title>
 
   <style>
     :root{
@@ -28,6 +28,8 @@
 
     *{box-sizing:border-box;}
 
+    html,body{max-width:100%; overflow-x:hidden;} /* ✅ stop page stretching */
+
     body{
       margin:0;
       font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -39,7 +41,11 @@
       padding:14px;
     }
 
-    .container{max-width:1120px;margin:0 auto;}
+    .container{
+      max-width:1120px;
+      margin:0 auto;
+      width:100%;
+    }
 
     /* Topbar */
     .topbar{
@@ -54,6 +60,7 @@
       border-radius:18px;
       box-shadow: var(--shadow);
       margin-bottom:14px;
+      max-width:100%;
     }
 
     .brand{
@@ -61,6 +68,7 @@
       align-items:center;
       gap:10px;
       min-width:0;
+      max-width:100%;
     }
 
     .logo{
@@ -100,6 +108,7 @@
       align-items:center;
       gap:10px;
       flex:0 0 auto;
+      max-width:100%;
     }
 
     .schoolLogo{
@@ -118,6 +127,7 @@
       border-radius:var(--radius);
       padding:14px;
       box-shadow: var(--shadow);
+      max-width:100%;
     }
 
     .muted{color:var(--muted);}
@@ -131,6 +141,7 @@
       grid-template-columns:360px 1fr;
       gap:14px;
       align-items:start;
+      max-width:100%;
     }
 
     @media(max-width:1020px){
@@ -154,6 +165,7 @@
       outline:none;
       background:#fff;
       transition:.15s;
+      max-width:100%;
     }
     input:focus,select:focus{
       border-color: rgba(123,56,195,0.55);
@@ -172,6 +184,7 @@
       font-size:14px;
       transition:.15s;
       box-shadow:0 10px 25px rgba(123,56,195,.18);
+      max-width:100%;
     }
     button:hover{transform: translateY(-1px);}
     button:active{transform: translateY(0);}
@@ -192,6 +205,7 @@
       gap:10px;
       margin-top:12px;
       flex-wrap:wrap;
+      max-width:100%;
     }
     .btnRow > button{flex:1; min-width:140px;}
 
@@ -204,6 +218,8 @@
       align-items:flex-start;
       justify-content:space-between;
       gap:10px;
+      flex-wrap:wrap; /* ✅ wrap on mobile */
+      max-width:100%;
     }
     .tag{
       display:inline-flex;
@@ -216,6 +232,7 @@
       background:#fff;
       color:var(--muted);
       white-space:nowrap;
+      max-width:100%;
     }
 
     /* Profile section */
@@ -223,6 +240,7 @@
       display:flex;
       gap:12px;
       align-items:center;
+      max-width:100%;
     }
     .avatar{
       width:54px;height:54px;
@@ -238,6 +256,7 @@
     }
     .profileMeta{
       min-width:0;
+      max-width:100%;
     }
     .profileMeta .name{
       font-weight:900;
@@ -267,6 +286,7 @@
       grid-template-columns:1fr 1fr 1fr;
       gap:10px;
       margin-top:10px;
+      max-width:100%;
     }
     .stat{
       border:1px solid var(--border);
@@ -274,6 +294,7 @@
       padding:10px;
       background:#fff;
       min-width:0;
+      max-width:100%;
     }
     .stat .k{font-size:11px;color:var(--muted);}
     .stat .v{
@@ -285,21 +306,16 @@
       text-overflow:ellipsis;
     }
     @media(max-width:640px){
-      .stats{grid-template-columns:1fr; }
+      .stats{grid-template-columns:1fr;}
     }
 
     /* QR */
-    .qrCard{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
     #qrBox{
       width:100%;
       display:flex;
       justify-content:center;
       padding:10px 0 0;
+      max-width:100%;
     }
     #qrContainer{
       background:#fff;
@@ -307,6 +323,7 @@
       padding:12px;
       border:1px dashed rgba(123,56,195,0.45);
       box-shadow:0 10px 25px rgba(123,56,195,.10);
+      max-width:100%;
     }
 
     .modePill{
@@ -319,28 +336,34 @@
       font-size:12px;
       border:1px solid var(--border);
       background:#fff;
+      max-width:100%;
     }
     .dot{
       width:10px;height:10px;border-radius:99px;
       background:var(--warn);
       box-shadow:0 0 0 4px rgba(243,156,18,.16);
+      flex:0 0 auto;
     }
     .dot.in{background:var(--ok); box-shadow:0 0 0 4px rgba(46,204,113,.16);}
     .dot.out{background:var(--accent2); box-shadow:0 0 0 4px rgba(123,56,195,.16);}
 
-    /* Table */
+    /* ✅ Table: scroll inside container (prevents page stretching) */
     .tableWrap{
-      overflow:auto;
+      width:100%;
+      overflow-x:auto;
+      overflow-y:auto;
       max-height:420px;
       border-radius:14px;
       border:1px solid var(--border);
       background:#fff;
+      -webkit-overflow-scrolling:touch;
+      max-width:100%;
     }
     table{
       width:100%;
       border-collapse:collapse;
       font-size:13px;
-      min-width:760px;
+      min-width:760px; /* desktop baseline */
     }
     th,td{
       padding:10px 10px;
@@ -368,6 +391,7 @@
       font-weight:800;
       border:1px solid var(--border);
       background:#fff;
+      max-width:100%;
     }
     .pill.ok{color:var(--ok); border-color:rgba(46,204,113,.35); background:rgba(46,204,113,.08);}
     .pill.warn{color:var(--warn); border-color:rgba(243,156,18,.35); background:rgba(243,156,18,.08);}
@@ -385,6 +409,7 @@
       font-size:14px;
       z-index:9999;
       box-shadow:0 12px 30px rgba(0,0,0,0.18);
+      max-width:min(92vw, 420px); /* ✅ avoid overflow on small screens */
     }
     #toast.success{background:var(--ok);}
     #toast.error{background:var(--bad);}
@@ -397,13 +422,18 @@
       font-size:12px;
     }
 
-    /* Mobile spacing */
+    /* ✅ Mobile tweaks */
     @media(max-width:640px){
       body{padding:10px;}
-      .topbar{padding:12px;}
+      .topbar{padding:12px; flex-wrap:wrap;}
       .brand h1{font-size:16px;}
       .card{padding:12px;}
-      table{min-width:680px;}
+      .btnRow > button{min-width:0;}
+      table{min-width:640px;} /* ✅ smaller min width so it doesn’t feel “super wide” */
+    }
+
+    @media(max-width:420px){
+      table{min-width:600px;}
     }
   </style>
 </head>
@@ -415,7 +445,7 @@
       <div class="brand">
         <div class="logo" id="brandIcon">UP</div>
         <div style="min-width:0;">
-          <h1>Dentistry Student Panel</h1>
+          <h1>User Panel — Attendance</h1>
           <p id="subTitle">Login to generate your QR code & view history</p>
         </div>
       </div>
@@ -701,7 +731,6 @@
   const signOutBtn=el('signOutBtn');
 
   const qrNote=el('qrNote');
-  const modePill=el('modePill');
   const modeDot=el('modeDot');
   const modeText=el('modeText');
 
@@ -710,7 +739,6 @@
   const statTotal=el('statTotal');
 
   let currentUser=null;
-  let currentMode='in';
 
   /* Auth Switch */
   showCreate.addEventListener('click',()=>{
@@ -814,7 +842,8 @@
         avatarTxt.textContent=(p.name||'U').slice(0,1).toUpperCase();
 
         // brand icon initials
-        el('brandIcon').textContent = (p.name||'UP').split(' ').slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('').slice(0,2) || 'UP';
+        el('brandIcon').textContent =
+          (p.name||'UP').split(' ').slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('').slice(0,2) || 'UP';
 
         editName.value=p.name||'';
         editCourse.value=p.course||'';
@@ -841,7 +870,6 @@
   }
 
   function setMode(mode){
-    currentMode = mode;
     if(mode==='in'){
       modeText.textContent = 'Mode: Time In';
       modeDot.className = 'dot in';
@@ -854,7 +882,6 @@
   }
 
   function updateStats(rows){
-    // rows: [{date, record}]
     const todayKey = new Date().toISOString().slice(0,10);
     const todayRow = rows.find(r=>r.date===todayKey)?.record;
 
@@ -885,7 +912,6 @@
     statLast.textContent  = lastAction;
     statTotal.textContent = String(rows.length);
 
-    // Set subtitle
     el('subTitle').textContent = `Welcome! Your attendance is synced in real-time.`;
   }
 
@@ -983,7 +1009,6 @@
   const timeOutBtn=el('timeOutBtn');
 
   if(timeInBtn && timeOutBtn){
-
     timeInBtn.addEventListener('click',()=>{
       if(currentUser) generateUserQR(currentUser.uid,'in');
     });
@@ -1017,7 +1042,6 @@
       await loadProfile(user.uid);
       loadAttendanceHistory(user.uid);
 
-      // Default mode: Time In
       generateUserQR(user.uid,'in');
 
     }else{
@@ -1042,4 +1066,4 @@
 </script>
 
 </body>
-</html>
+  </html>
