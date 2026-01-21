@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Panel — Attendance</title>
+
+  <style>
+    :root{
+      --accent1:#b76bdc;
+      --accent2:#7b38c3;
+
+      --bg:#f8f6fb;
+      --card:#ffffff;
+
+      --text:#1f1f29;
+      --muted:#6b6b7a;
+
+      --border:rgba(0,0,0,0.08);
+      --shadow:0 10px 30px rgba(59,20,88,0.08);
+
+      --ok:#2ecc71;
+      --warn:#f39c12;
+      --bad:#e74c3c;
+
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box;}
+
+    /* ✅ stop page stretching */
+    html,body{max-width:100%; overflow-x:hidden;}
+
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(183,107,220,0.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(123,56,195,0.18), transparent 55%),
+        linear-gradient(180deg,var(--bg),#fff);
+      padding:14px;
+    }
+
+    .container{
+      max-width:1120px;
+      margin:0 auto;
+      width:100%;
+    }
+
+    /* Topbar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.82);
+      backdrop-filter: blur(10px);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      margin-bottom:14px;
+      max-width:100%;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .logo{
+      width:44px;height:44px;
+      border-radius:14px;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:800;
+      letter-spacing:.4px;
+      flex:0 0 auto;
+      box-shadow:0 10px 25px rgba(123,56,195,.18);
+      overflow:hidden;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex:0 0 auto;
+      max-width:100%;
+    }
+
+    .schoolLogo{
+      width:44px;height:44px;
+      border-radius:14px;
+      object-fit:contain;
+      border:1px solid var(--border);
+      background:#fff;
+      padding:6px;
+    }
+
+    /* Cards */
+    .card{
+      background:rgba(255,255,255,0.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow: var(--shadow);
+      max-width:100%;
+    }
+
+    .muted{color:var(--muted);}
+    .small{font-size:12px;}
+    .h3{margin:0;font-size:16px;}
+    .h4{margin:0;font-size:14px;}
+
+    /* Layout Grid */
+    #mainGrid{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:14px;
+      align-items:start;
+      max-width:100%;
+    }
+
+    @media(max-width:1020px){
+      #mainGrid{grid-template-columns:1fr;}
+    }
+
+    /* Buttons / Inputs */
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+
+    input,select{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:14px;
+      outline:none;
+      background:#fff;
+      transition:.15s;
+      max-width:100%;
+    }
+    input:focus,select:focus{
+      border-color: rgba(123,56,195,0.55);
+      box-shadow: 0 0 0 4px rgba(123,56,195,0.14);
+    }
+
+    button{
+      width:100%;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      color:#fff;
+      padding:11px 12px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      font-size:14px;
+      transition:.15s;
+      box-shadow:0 10px 25px rgba(123,56,195,.18);
+      max-width:100%;
+    }
+    button:hover{transform: translateY(-1px);}
+    button:active{transform: translateY(0);}
+    button.ghost{
+      background:#fff;
+      color:var(--accent2);
+      border:1px solid var(--border);
+      box-shadow:none;
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+      width:100%;
+      max-width:100%;
+    }
+    /* ✅ critical: allow buttons to shrink (prevents off-screen) */
+    .btnRow > button{
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    /* Auth */
+    #authCard{
+      margin-bottom:14px;
+    }
+    .authHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      max-width:100%;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+      white-space:nowrap;
+      max-width:100%;
+    }
+
+    /* Profile section */
+    .profile{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      max-width:100%;
+    }
+    .avatar{
+      width:54px;height:54px;
+      border-radius:16px;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:900;
+      font-size:18px;
+      flex:0 0 auto;
+    }
+    .profileMeta{
+      min-width:0;
+      max-width:100%;
+    }
+    .profileMeta .name{
+      font-weight:900;
+      font-size:15px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .profileMeta .sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .divider{
+      height:1px;
+      background:rgba(0,0,0,0.06);
+      margin:12px 0;
+    }
+
+    /* Stats */
+    .stats{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+      max-width:100%;
+    }
+    .stat{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      background:#fff;
+      min-width:0;
+      max-width:100%;
+    }
+    .stat .k{font-size:11px;color:var(--muted);}
+    .stat .v{
+      font-size:14px;
+      font-weight:900;
+      margin-top:4px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    @media(max-width:640px){
+      .stats{grid-template-columns:1fr;}
+    }
+
+    /* QR */
+    #qrBox{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:10px 0 0;
+      overflow:hidden; /* ✅ prevents pushing layout */
+      max-width:100%;
+    }
+    #qrContainer{
+      background:#fff;
+      border-radius:18px;
+      padding:12px;
+      border:1px dashed rgba(123,56,195,0.45);
+      box-shadow:0 10px 25px rgba(123,56,195,.10);
+      max-width:100%;
+      width: fit-content;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    /* qrcodejs outputs img or canvas */
+    #qrContainer img, #qrContainer canvas{
+      display:block;
+      max-width: 78vw;   /* ✅ responsive */
+      max-height: 78vw;
+      width:auto;
+      height:auto;
+    }
+
+    .modePill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      max-width:100%;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:99px;
+      background:var(--warn);
+      box-shadow:0 0 0 4px rgba(243,156,18,.16);
+      flex:0 0 auto;
+    }
+    .dot.in{background:var(--ok); box-shadow:0 0 0 4px rgba(46,204,113,.16);}
+    .dot.out{background:var(--accent2); box-shadow:0 0 0 4px rgba(123,56,195,.16);}
+
+    /* ✅ Table scrolls INSIDE its box (no page stretch) */
+    .tableWrap{
+      width:100%;
+      overflow-x:auto;
+      overflow-y:auto;
+      max-height:420px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+      -webkit-overflow-scrolling:touch;
+      max-width:100%;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+      min-width:760px; /* desktop baseline */
+    }
+    th,td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+      text-align:left;
+      white-space:nowrap;
+    }
+    thead th{
+      position:sticky;
+      top:0;
+      background:#fff;
+      z-index:1;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.2px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid var(--border);
+      background:#fff;
+      max-width:100%;
+    }
+    .pill.ok{color:var(--ok); border-color:rgba(46,204,113,.35); background:rgba(46,204,113,.08);}
+    .pill.warn{color:var(--warn); border-color:rgba(243,156,18,.35); background:rgba(243,156,18,.08);}
+    .pill.bad{color:var(--bad); border-color:rgba(231,76,60,.35); background:rgba(231,76,60,.08);}
+
+    /* Toast */
+    #toast{
+      position:fixed;
+      right:14px;
+      top:86px;
+      padding:10px 14px;
+      border-radius:14px;
+      color:#fff;
+      display:none;
+      font-size:14px;
+      z-index:9999;
+      box-shadow:0 12px 30px rgba(0,0,0,0.18);
+      max-width:min(92vw, 420px);
+    }
+    #toast.success{background:var(--ok);}
+    #toast.error{background:var(--bad);}
+
+    /* Footer */
+    .footerNote{
+      margin-top:10px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* ✅ Mobile tweaks */
+    @media(max-width:640px){
+      body{padding:10px;}
+      .topbar{padding:12px; flex-wrap:wrap;}
+      .brand h1{font-size:16px;}
+      .card{padding:12px;}
+      table{min-width:640px;}
+    }
+
+    @media(max-width:420px){
+      /* stack buttons on very small phones */
+      .btnRow{flex-direction:column;}
+      table{min-width:600px;}
+    }
+
+    /* ✅ Make sure key containers never force width */
+    #leftCol, #dashboard, #editCard, .card, .container, #mainGrid {
+      max-width: 100%;
+      min-width: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" id="brandIcon">UP</div>
+        <div style="min-width:0;">
+          <h1>User Panel — Attendance</h1>
+          <p id="subTitle">Login to generate your QR code & view history</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <img class="schoolLogo" src="college-logo.png" alt="School logo">
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <!-- AUTH CARD -->
+    <div id="authCard" class="card">
+      <div class="authHeader">
+        <div>
+          <div class="h3" style="font-weight:900;">Account Access</div>
+          <div class="muted small" style="margin-top:4px;">Sign in to use your QR and view attendance.</div>
+        </div>
+        <div class="tag">Secure Login</div>
+      </div>
+
+      <div id="authForms" style="margin-top:10px;">
+
+        <!-- LOGIN -->
+        <div id="loginForm">
+          <label>Email</label>
+          <input id="loginEmail" type="email" placeholder="student@example.edu">
+
+          <label>Password</label>
+          <input id="loginPass" type="password" placeholder="••••••">
+
+          <div class="btnRow">
+            <button id="loginBtn">Login</button>
+            <button id="showCreate" class="ghost">Create account</button>
+          </div>
+        </div>
+
+        <!-- CREATE ACCOUNT -->
+        <div id="createForm" style="display:none;">
+          <div class="tag" style="margin-bottom:10px;">Create Profile</div>
+
+          <label>Full name</label>
+          <input id="createName" placeholder="Juan Dela Cruz">
+
+          <label>Email</label>
+          <input id="createEmail" type="email" placeholder="student@example.edu">
+
+          <label>Password</label>
+          <input id="createPass" type="password" placeholder="Choose a password">
+
+          <div style="display:grid;grid-template-columns:1fr 140px;gap:10px;margin-top:10px;">
+            <div>
+              <label>Course</label>
+              <input id="createCourse" placeholder="BS Dentistry">
+            </div>
+            <div>
+              <label>Year level</label>
+              <select id="createYear">
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btnRow">
+            <button id="createBtn">Create account</button>
+            <button id="showLogin" class="ghost">Back to login</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div id="mainGrid">
+
+      <!-- LEFT (PROFILE + QR) -->
+      <aside class="card" id="leftCol">
+
+        <div id="notSigned">
+          <div class="tag">Not signed in</div>
+          <p class="muted" style="margin:10px 0 0;">
+            Please login to generate your QR code and view attendance history.
+          </p>
+        </div>
+
+        <div id="profileView" style="display:none;">
+
+          <div class="profile">
+            <div class="avatar" id="avatarTxt">U</div>
+            <div class="profileMeta">
+              <div class="name" id="pname">Name</div>
+              <div class="sub" id="pcourse">Course • Year</div>
+            </div>
+          </div>
+
+          <div class="btnRow" style="margin-top:12px;">
+            <button id="editProfileBtn" class="ghost">Edit profile</button>
+            <button id="signOutBtn">Sign out</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="h4" style="font-weight:900;">Quick Stats</div>
+          <div class="stats">
+            <div class="stat">
+              <div class="k">Today Status</div>
+              <div class="v" id="statToday">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Last Action</div>
+              <div class="v" id="statLast">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Total Records</div>
+              <div class="v" id="statTotal">—</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div class="h4" style="font-weight:900;">Your QR Code</div>
+              <div class="muted small">Show this QR to the Admin Scanner</div>
+            </div>
+            <div class="modePill" id="modePill">
+              <span class="dot in" id="modeDot"></span>
+              <span id="modeText">Mode: Time In</span>
+            </div>
+          </div>
+
+          <div id="qrBox"><div id="qrContainer"></div></div>
+          <div class="muted small" id="qrNote" style="text-align:center;margin-top:8px;">QR loads after login</div>
+
+          <div class="btnRow" style="margin-top:10px;">
+            <button id="timeInBtn">Time In</button>
+            <button id="timeOutBtn" class="ghost">Time Out</button>
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- RIGHT COLUMN (DASHBOARD & EDIT CARD) -->
+      <section>
+
+        <div id="dashboard" class="card" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div class="h3" style="font-weight:900;">Dashboard</div>
+              <div class="muted small" style="margin-top:4px;">Attendance history & status updates.</div>
+            </div>
+            <div class="tag">Last sync: <span id="lastSync">—</span></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="h4" style="font-weight:900;margin-bottom:10px;">Attendance History</div>
+
+          <div class="tableWrap">
+            <table id="historyTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Morning In</th>
+                  <th>Morning Out</th>
+                  <th>Afternoon In</th>
+                  <th>Afternoon Out</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody">
+                <tr><td colspan="6" class="muted">No history</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="editCard" class="card" style="display:none;margin-top:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div class="h3" style="font-weight:900;">Edit Profile</div>
+              <div class="muted small" style="margin-top:4px;">Update your details correctly.</div>
+            </div>
+            <div class="tag">Profile Settings</div>
+          </div>
+
+          <label>Full name</label>
+          <input id="editName">
+
+          <label>Course</label>
+          <input id="editCourse">
+
+          <label>Year</label>
+          <select id="editYear">
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+          </select>
+
+          <div class="btnRow">
+            <button id="saveProfile">Save</button>
+            <button id="cancelEdit" class="ghost">Cancel</button>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <div class="footerNote">To God be the Glory.</div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getDatabase, ref, set, get, onValue }
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7h8wS3Rs6rSZVjUKL8DE9NlqxD3dCIgI",
+    authDomain: "dent-dept-dtr.firebaseapp.com",
+    databaseURL: "https://dent-dept-dtr-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dent-dept-dtr",
+    storageBucket: "dent-dept-dtr.firebasestorage.app",
+    messagingSenderId: "537868899036",
+    appId: "1:537868899036:web:8dd6dfa10493533616da19",
+    measurementId: "G-KD8DF5EDSW"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  /* Toast */
+  const toast=document.getElementById('toast');
+  function showToast(msg,type='success'){
+    toast.textContent=msg;
+    toast.className=type;
+    toast.style.display='block';
+    setTimeout(()=>toast.style.display='none',2200);
+  }
+
+  /* Elements */
+  const el = (id)=>document.getElementById(id);
+
+  const loginEmail=el('loginEmail');
+  const loginPass=el('loginPass');
+  const loginBtn=el('loginBtn');
+  const showCreate=el('showCreate');
+
+  const createForm=el('createForm');
+  const loginForm=el('loginForm');
+  const showLogin=el('showLogin');
+
+  const createName=el('createName');
+  const createEmail=el('createEmail');
+  const createPass=el('createPass');
+  const createCourse=el('createCourse');
+  const createYear=el('createYear');
+  const createBtn=el('createBtn');
+
+  const profileView=el('profileView');
+  const pname=el('pname');
+  const pcourse=el('pcourse');
+  const avatarTxt=el('avatarTxt');
+  const notSigned=el('notSigned');
+  const dashboard=el('dashboard');
+
+  const historyBody=el('historyBody');
+  const lastSync=el('lastSync');
+
+  const editCard=el('editCard');
+  const editName=el('editName');
+  const editCourse=el('editCourse');
+  const editYear=el('editYear');
+
+  const editProfileBtn=el('editProfileBtn');
+  const saveProfile=el('saveProfile');
+  const cancelEdit=el('cancelEdit');
+  const signOutBtn=el('signOutBtn');
+
+  const qrNote=el('qrNote');
+  const modeDot=el('modeDot');
+  const modeText=el('modeText');
+
+  const statToday=el('statToday');
+  const statLast=el('statLast');
+  const statTotal=el('statTotal');
+
+  let currentUser=null;
+
+  /* Auth Switch */
+  showCreate.addEventListener('click',()=>{
+    loginForm.style.display='none';
+    createForm.style.display='block';
+  });
+  showLogin.addEventListener('click',()=>{
+    loginForm.style.display='block';
+    createForm.style.display='none';
+  });
+
+  createBtn.addEventListener('click',async()=>{
+    const name=createName.value.trim();
+    const email=createEmail.value.trim();
+    const pass=createPass.value;
+    const course=createCourse.value.trim();
+    const year=createYear.value;
+
+    if(!name||!email||!pass){
+      showToast('Fill required fields','error');
+      return;
+    }
+
+    try{
+      const cred=await createUserWithEmailAndPassword(auth,email,pass);
+      const uid=cred.user.uid;
+      await set(ref(db,`users/${uid}`),{name,course,year,email,created:Date.now()});
+      showToast('Account created');
+    }catch(e){
+      showToast(e.message||'Error','error');
+    }
+  });
+
+  loginBtn.addEventListener('click',async()=>{
+    const email=loginEmail.value.trim();
+    const pass=loginPass.value;
+
+    if(!email||!pass){
+      showToast('Enter credentials','error');
+      return;
+    }
+
+    try{
+      await signInWithEmailAndPassword(auth,email,pass);
+      showToast('Signed in');
+    }catch(e){
+      showToast('Sign in failed','error');
+    }
+  });
+
+  signOutBtn.addEventListener('click', async()=>{
+    await signOut(auth);
+    showToast('Signed out');
+  });
+
+  /* Edit Profile */
+  editProfileBtn.addEventListener('click',()=>{
+    editCard.style.display='block';
+    dashboard.style.display='none';
+  });
+
+  cancelEdit.addEventListener('click',()=>{
+    editCard.style.display='none';
+    dashboard.style.display='block';
+  });
+
+  saveProfile.addEventListener('click',async()=>{
+    if(!currentUser)return;
+
+    const uid=currentUser.uid;
+    const name=editName.value.trim();
+    const course=editCourse.value.trim();
+    const year=editYear.value;
+
+    if(!name){
+      showToast('Name required','error');
+      return;
+    }
+
+    try{
+      await set(ref(db,`users/${uid}`),{
+        name,course,year,email:currentUser.email
+      });
+
+      showToast('Saved');
+      editCard.style.display='none';
+      dashboard.style.display='block';
+      loadProfile(uid);
+    }catch(e){
+      showToast('Save failed','error');
+    }
+  });
+
+  async function loadProfile(uid){
+    try{
+      const snap=await get(ref(db,`users/${uid}`));
+      if(snap.exists()){
+        const p=snap.val();
+        pname.textContent=p.name||currentUser.email;
+        pcourse.textContent=`${p.course||''} • Year ${p.year||''}`;
+        avatarTxt.textContent=(p.name||'U').slice(0,1).toUpperCase();
+
+        // brand icon initials
+        el('brandIcon').textContent =
+          (p.name||'UP').split(' ').slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('').slice(0,2) || 'UP';
+
+        editName.value=p.name||'';
+        editCourse.value=p.course||'';
+        editYear.value=p.year||'1';
+      }
+    }catch(e){
+      console.error(e);
+    }
+  }
+
+  function formatTime(d){
+    if(!d)return '';
+    let h=d.getHours()%12;
+    if(h===0)h=12;
+    let m=String(d.getMinutes()).padStart(2,'0');
+    return `${h}:${m} ${d.getHours()<12?'AM':'PM'}`;
+  }
+
+  function escapeHTML(s){
+    return String(s||'')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;');
+  }
+
+  function setMode(mode){
+    if(mode==='in'){
+      modeText.textContent = 'Mode: Time In';
+      modeDot.className = 'dot in';
+      qrNote.textContent = 'QR Ready for Time In';
+    }else{
+      modeText.textContent = 'Mode: Time Out';
+      modeDot.className = 'dot out';
+      qrNote.textContent = 'QR Ready for Time Out';
+    }
+  }
+
+  function updateStats(rows){
+    const todayKey = new Date().toISOString().slice(0,10);
+    const todayRow = rows.find(r=>r.date===todayKey)?.record;
+
+    let todayStatus = 'Absent';
+    let lastAction  = '—';
+
+    const getLast = (rec)=>{
+      const times = [
+        rec?.morningIn, rec?.morningOut,
+        rec?.afternoonIn, rec?.afternoonOut
+      ].filter(Boolean).sort((a,b)=>b-a);
+      return times[0] ? new Date(times[0]) : null;
+    };
+
+    if(todayRow){
+      const hasAnyIn = !!(todayRow.morningIn || todayRow.afternoonIn);
+      const hasAnyOut = !!(todayRow.morningOut || todayRow.afternoonOut);
+
+      if(hasAnyIn && hasAnyOut) todayStatus = 'Complete';
+      else if(hasAnyIn) todayStatus = 'Partial';
+      else todayStatus = 'Absent';
+
+      const la = getLast(todayRow);
+      lastAction = la ? la.toLocaleString() : '—';
+    }
+
+    statToday.textContent = todayStatus;
+    statLast.textContent  = lastAction;
+    statTotal.textContent = String(rows.length);
+
+    el('subTitle').textContent = `Welcome! Your attendance is synced in real-time.`;
+  }
+
+  function statusPill(rec){
+    const hasIn  = !!(rec.morningIn || rec.afternoonIn);
+    const hasOut = !!(rec.morningOut || rec.afternoonOut);
+
+    if(hasIn && hasOut) return `<span class="pill ok">Complete</span>`;
+    if(hasIn) return `<span class="pill warn">Partial</span>`;
+    return `<span class="pill bad">Absent</span>`;
+  }
+
+  function renderHistory(rows){
+    if(!rows.length){
+      historyBody.innerHTML='<tr><td colspan="6" class="muted">No records</td></tr>';
+      updateStats([]);
+      return;
+    }
+
+    updateStats(rows);
+
+    historyBody.innerHTML = rows.map(item=>{
+      const r=item.record;
+      return `
+        <tr>
+          <td>${escapeHTML(item.date)}</td>
+          <td>${r.morningIn?formatTime(new Date(r.morningIn)):''}</td>
+          <td>${r.morningOut?formatTime(new Date(r.morningOut)):''}</td>
+          <td>${r.afternoonIn?formatTime(new Date(r.afternoonIn)):''}</td>
+          <td>${r.afternoonOut?formatTime(new Date(r.afternoonOut)):''}</td>
+          <td>${statusPill(r)}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function loadAttendanceHistory(uid){
+    const attRef=ref(db,'attendance');
+
+    onValue(attRef,(snapshot)=>{
+      lastSync.textContent=new Date().toLocaleString();
+
+      if(!snapshot.exists()){
+        renderHistory([]);
+        return;
+      }
+
+      const all=snapshot.val();
+      const rows=[];
+
+      for(const dateKey of Object.keys(all).sort().reverse()){
+        const day=all[dateKey];
+        if(day && day[uid]){
+          rows.push({ date:dateKey, record:day[uid] });
+        }
+      }
+
+      renderHistory(rows);
+    });
+  }
+
+  /* ✅ QR Code (RESPONSIVE SIZE) */
+  function generateUserQR(uid,mode='in'){
+    try{
+      const container=el('qrContainer');
+      container.innerHTML='';
+
+      const data=JSON.stringify({uid,mode});
+
+      // ✅ responsive size: fits phone width
+      const size = Math.min(240, Math.floor(window.innerWidth * 0.70));
+
+      new QRCode(container,{
+        text:data,
+        width:size,
+        height:size
+      });
+
+      setMode(mode);
+
+    }catch(e){
+      console.error('QR generation failed',e);
+    }
+  }
+
+  async function hasTimedInToday(uid){
+    const todayKey=new Date().toISOString().slice(0,10);
+    const snap=await get(ref(db,`attendance/${todayKey}/${uid}`));
+
+    if(snap.exists()){
+      const data=snap.val();
+      return !!(data.morningIn || data.afternoonIn);
+    }
+    return false;
+  }
+
+  const timeInBtn=el('timeInBtn');
+  const timeOutBtn=el('timeOutBtn');
+
+  if(timeInBtn && timeOutBtn){
+    timeInBtn.addEventListener('click',()=>{
+      if(currentUser) generateUserQR(currentUser.uid,'in');
+    });
+
+    timeOutBtn.addEventListener('click',async()=>{
+      if(!currentUser)return;
+
+      const uid=currentUser.uid;
+      const timedIn=await hasTimedInToday(uid);
+
+      if(!timedIn){
+        showToast('You cannot Time Out without Timing In first.','error');
+        return;
+      }
+
+      generateUserQR(uid,'out');
+    });
+  }
+
+  /* Auth Listener */
+  onAuthStateChanged(auth,async(user)=>{
+    currentUser=user;
+
+    if(user){
+      notSigned.style.display='none';
+      profileView.style.display='block';
+      dashboard.style.display='block';
+
+      el('authCard').style.display='none';
+
+      await loadProfile(user.uid);
+      loadAttendanceHistory(user.uid);
+
+      generateUserQR(user.uid,'in');
+
+    }else{
+      notSigned.style.display='block';
+      profileView.style.display='none';
+      dashboard.style.display='none';
+
+      el('authCard').style.display='block';
+
+      el('qrContainer').innerHTML='';
+      el('qrNote').textContent='QR loads after login';
+
+      el('subTitle').textContent='Login to generate your QR code & view history';
+
+      statToday.textContent = '—';
+      statLast.textContent = '—';
+      statTotal.textContent = '—';
+      setMode('in');
+      el('brandIcon').textContent = 'UP';
+    }
+  });
+
+  // ✅ Re-generate QR on orientation change / resize to keep it fitting
+  window.addEventListener('resize', ()=>{
+    if(currentUser){
+      // keep current mode text based on pill
+      const mode = (modeText.textContent||'').toLowerCase().includes('out') ? 'out' : 'in';
+      generateUserQR(currentUser.uid, mode);
+    }
+  }, {passive:true});
+</script>
+
+</body>
+</html>
