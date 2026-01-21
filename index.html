@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dentistry Admin Panel</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.1/umd/index.min.js"></script>
+
+<style>
+:root{
+  --primary:#7b38c3;
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --muted:#666;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+}
+
+#topbar{
+  background:#fff;
+  border-bottom:3px solid var(--primary);
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+#logo{height:42px}
+
+#container{
+  max-width:1200px;
+  margin:20px auto;
+  display:flex;
+  gap:16px;
+  padding:0 12px;
+  align-items:flex-start;
+}
+
+.card{
+  background:var(--card);
+  padding:16px;
+  border:none;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.left{width:340px}
+.right{flex:1; min-width:0;} /* important for flex overflow on mobile */
+
+button{
+  padding:10px 12px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.2s;
+}
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  box-shadow:none;
+  transform:none;
+}
+button.ghost{
+  background:transparent;
+  color:var(--primary);
+  border:1px solid var(--primary);
+}
+
+.controls{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+
+video{
+  width:100%;
+  height:240px;
+  background:#000;
+  margin-top:10px;
+  border-radius:10px;
+}
+
+#toast{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#333;
+  color:#fff;
+  padding:10px 14px;
+  display:none;
+  z-index:999;
+  border-radius:10px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+#loginScreen{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#eee;
+}
+
+#loginScreen input{
+  padding:10px;
+  width:260px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  outline:none;
+}
+
+.print-header{
+  display:none;
+}
+
+#search{
+  padding:10px;
+  width:100%;
+  border-radius:10px;
+  border:1px solid #cfcfe6;
+  outline:none;
+  margin-bottom:10px;
+  box-sizing:border-box;
+}
+#search:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(123,56,195,.15);
+}
+
+/* TABLE + SCROLL WRAP (MOBILE FRIENDLY) */
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  border-radius:10px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  border-radius:10px;
+  overflow:hidden;
+  min-width:760px; /* allows horizontal scroll on phones */
+}
+
+th,td{
+  border:1px solid #000;
+  padding:8px 6px;
+}
+
+th{
+  background:#f1ecfb;
+}
+
+/* Make layout mobile-friendly */
+@media (max-width: 900px){
+  #container{ flex-direction:column; }
+  .left,.right{ width:100%; }
+  video{ height:220px; }
+  #topbar{ gap:10px; flex-wrap:wrap; }
+}
+
+/* PRINT */
+@media print{
+  body{background:#fff}
+  #topbar,.left,#toast,button,input,select{display:none!important}
+  .print-header{display:block;text-align:center;margin-bottom:20px}
+  th{background:#ddd!important}
+}
+</style>
+</head>
+
+<body>
+
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="card">
+    <h3>Admin Login</h3>
+    <input id="loginUser" placeholder="Username"><br><br>
+    <input id="loginPass" type="password" placeholder="Password"><br><br>
+    <button id="loginBtn">Login</button>
+    <div id="loginError" style="color:red;display:none;margin-top:10px">Invalid credentials</div>
+  </div>
+</div>
+
+<div id="adminApp" style="display:none">
+
+<header id="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <img id="logo" src="college-logo.png">
+    <strong>Dentistry Admin Panel</strong>
+  </div>
+  <button id="logoutBtn" class="ghost">Logout</button>
+</header>
+
+<main id="container">
+
+<section class="left card">
+  <h4 style="margin:0 0 6px 0">QR Scanner</h4>
+
+  <!-- Scanner Status -->
+  <div id="scanStatus" style="margin:6px 0 10px 0;font-weight:700;color:#e74c3c">
+    🔴 Scanner stopped
+  </div>
+
+  <select id="session" style="padding:10px;border-radius:10px;border:1px solid #cfcfe6;outline:none;width:100%">
+    <option value="morning">Morning</option>
+    <option value="afternoon">Afternoon</option>
+  </select>
+
+  <div class="controls">
+    <button id="startBtn">Start</button>
+    <button id="stopBtn" class="ghost" disabled>Stop</button>
+    <button id="resetBtn" class="ghost">Reset Today</button>
+  </div>
+
+  <video id="video" autoplay muted></video>
+
+  <div class="controls">
+    <button id="printBtn">Print</button>
+  </div>
+</section>
+
+<section class="right card">
+
+  <div class="print-header">
+    <h2>Daily Attendance Report</h2>
+    <p id="printDate"></p>
+  </div>
+
+  <!-- Search -->
+  <input id="search" placeholder="Search name..." />
+
+  <!-- Table scroll wrapper (mobile friendly) -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Course</th><th>Year</th>
+          <th>Morning In</th><th>Morning Out</th>
+          <th>Afternoon In</th><th>Afternoon Out</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+/* ===== CONFIG ===== */
+const LOGIN_USER="admin";
+const LOGIN_PASS="admin123";
+const AUTO_LOGOUT_MS=5*60*1000;
+
+/* ===== ELEMENTS ===== */
+const el=id=>document.getElementById(id);
+const toast=el("toast");
+const loginScreen=el("loginScreen");
+const adminApp=el("adminApp");
+
+/* ===== TOAST ===== */
+function showToast(msg){
+  toast.textContent=msg;
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",2500);
+}
+
+/* ===== SCANNER STATUS ===== */
+const scanStatus=el("scanStatus");
+function setScanStatus(text,color){
+  if(!scanStatus) return;
+  scanStatus.textContent=text;
+  scanStatus.style.color=color;
+}
+
+/* ===== LOGIN ===== */
+let logoutTimer;
+function resetTimer(){
+  clearTimeout(logoutTimer);
+  logoutTimer=setTimeout(()=>logout(),AUTO_LOGOUT_MS);
+}
+["click","mousemove","keydown","touchstart"].forEach(e=>{
+  document.addEventListener(e,()=>sessionStorage.getItem("admin")&&resetTimer(),{passive:true});
+});
+
+el("loginBtn").onclick=()=>{
+  if(el("loginUser").value===LOGIN_USER && el("loginPass").value===LOGIN_PASS){
+    sessionStorage.setItem("admin","1");
+    loginScreen.style.display="none";
+    adminApp.style.display="block";
+    resetTimer();
+  }else{
+    el("loginError").style.display="block";
+  }
+};
+
+function logout(){
+  sessionStorage.clear();
+  stopScanner();
+  location.reload();
+}
+el("logoutBtn").onclick=logout;
+
+if(sessionStorage.getItem("admin")==="1"){
+  loginScreen.style.display="none";
+  adminApp.style.display="block";
+  resetTimer();
+}
+
+/* ===== FIREBASE ===== */
+const app=initializeApp({
+  apiKey:"AIzaSyC7h8wS3Rs6rSZVjUKL8DE9NlqxD3dCIgI",
+  databaseURL:"https://dent-dept-dtr-default-rtdb.asia-southeast1.firebasedatabase.app"
+});
+const db=getDatabase(app);
+
+/* ===== DATE ===== */
+const today=new Date().toISOString().slice(0,10);
+el("printDate").textContent=`Date: ${today}`;
+
+/*
+  ✅ IMPORTANT:
+  - USER_PATH is the permanent path that the USER PANEL reads
+  - ADMIN_PATH is admin-only "today view" (resettable without touching users)
+*/
+const ADMIN_PATH = `adminAttendance/${today}`;  // Admin table reads this
+const USER_PATH  = `attendance/${today}`;       // User panel reads this
+
+/* ===== SCANNER ===== */
+const reader=new ZXing.BrowserQRCodeReader();
+let scanning=false;
+let lastScan={uid:null,ts:0};
+
+async function startScanner(){
+  if(scanning) return;
+  try{
+    const cams=await reader.listVideoInputDevices();
+    const cam=cams.find(c=>/rear|back|env/i.test(c.label))||cams[0];
+
+    reader.decodeFromVideoDevice(cam.deviceId,el("video"),res=>{
+      if(res) handleScan(res.getText());
+    });
+
+    scanning=true;
+
+    // UI toggles
+    el("startBtn").disabled=true;
+    el("stopBtn").disabled=false;
+
+    setScanStatus("🟢 Scanner active","#2ecc71");
+  }catch(e){
+    setScanStatus("❌ Camera error","#e74c3c");
+    showToast("Camera access failed");
+  }
+}
+
+function stopScanner(){
+  reader.reset();
+  scanning=false;
+
+  // UI toggles
+  el("startBtn").disabled=false;
+  el("stopBtn").disabled=true;
+
+  setScanStatus("🔴 Scanner stopped","#e74c3c");
+}
+el("startBtn").onclick=startScanner;
+el("stopBtn").onclick=stopScanner;
+
+/* ===== DATA (ADMIN VIEW ONLY) ===== */
+let store={};
+onValue(ref(db,ADMIN_PATH),s=>{
+  store=s.exists()?s.val():{};
+  render();
+});
+
+/* ===== SCAN LOGIC ===== */
+async function handleScan(txt){
+  setScanStatus("⏳ Processing scan...","#f39c12");
+
+  let qr;
+  try{ qr=JSON.parse(txt); }
+  catch{
+    setScanStatus("❌ Invalid QR","#e74c3c");
+    return;
+  }
+
+  const now=Date.now();
+  if(qr.uid===lastScan.uid && now-lastScan.ts<2000){
+    setScanStatus("🟢 Ready","#2ecc71");
+    return;
+  }
+  lastScan={uid:qr.uid,ts:now};
+
+  const userSnap=await get(ref(db,`users/${qr.uid}`));
+  if(!userSnap.exists()){
+    showToast("Student not found");
+    setScanStatus("❌ Student not found","#e74c3c");
+    return;
+  }
+
+  // ✅ Read permanent (user) record FIRST so rules work even if adminAttendance was reset
+  const mainSnap = await get(ref(db, `${USER_PATH}/${qr.uid}`));
+  const mainRow  = mainSnap.exists() ? mainSnap.val() : {};
+
+  // Merge main + admin store (admin store is just the "today view")
+  const row = { ...mainRow, ...(store[qr.uid]||{}) };
+
+  const sess=el("session").value;
+  const inK=sess==="morning"?"morningIn":"afternoonIn";
+  const outK=sess==="morning"?"morningOut":"afternoonOut";
+
+  // IMPORTANT RULE: cannot time-out without time-in (checks permanent record too)
+  if(qr.mode==="out" && !row[inK]){
+    showToast("Time-In required");
+    setScanStatus("❌ Time-In required","#e74c3c");
+    return;
+  }
+
+  const key=qr.mode==="in"?inK:outK;
+
+  // Prevent duplicates (checks permanent record too)
+  if(row[key]){
+    showToast("Already recorded");
+    setScanStatus("❌ Already recorded","#e74c3c");
+    return;
+  }
+
+  const payload = {
+    ...row,
+    ...userSnap.val(),
+    [key]: now
+  };
+
+  // ✅ Save to permanent path (User Panel reads this)
+  await set(ref(db, `${USER_PATH}/${qr.uid}`), payload);
+
+  // ✅ Save to admin-only view (Admin table reads this)
+  await set(ref(db, `${ADMIN_PATH}/${qr.uid}`), payload);
+
+  showToast("Recorded");
+  setScanStatus("🟢 Ready","#2ecc71");
+}
+
+/* ===== RENDER ===== */
+function fmt(t){ return t ? new Date(t).toLocaleTimeString() : ""; }
+
+function render(){
+  const q=(el("search")?.value||"").toLowerCase();
+
+  el("tableBody").innerHTML=Object.values(store)
+    .filter(r => (r.name||"").toLowerCase().includes(q))
+    .map(r=>{
+      const missM = r.morningIn && !r.morningOut;
+      const missA = r.afternoonIn && !r.afternoonOut;
+      const rowTint = (missM || missA) ? "background:#fff3f3" : "";
+
+      return `
+      <tr style="${rowTint}">
+        <td>${r.name||""}</td>
+        <td>${r.course||""}</td>
+        <td>${r.year||""}</td>
+        <td>${fmt(r.morningIn)}</td>
+        <td style="color:${missM ? "red" : "inherit"}">${fmt(r.morningOut)}</td>
+        <td>${fmt(r.afternoonIn)}</td>
+        <td style="color:${missA ? "red" : "inherit"}">${fmt(r.afternoonOut)}</td>
+      </tr>`;
+    }).join("");
+}
+
+/* Live search */
+el("search").oninput=render;
+
+/* ===== RESET (ADMIN VIEW ONLY - DOES NOT TOUCH USER PANEL) ===== */
+el("resetBtn").onclick=async()=>{
+  const pass=prompt("Enter admin password:");
+  if(pass!==LOGIN_PASS){
+    showToast("Wrong password");
+    setScanStatus("❌ Wrong password","#e74c3c");
+    return;
+  }
+
+  // CSV BACKUP (admin view)
+  let csv="Name,Course,Year,Morning In,Morning Out,Afternoon In,Afternoon Out\n";
+  Object.values(store).forEach(r=>{
+    csv+=`${r.name},${r.course},${r.year},${fmt(r.morningIn)},${fmt(r.morningOut)},${fmt(r.afternoonIn)},${fmt(r.afternoonOut)}\n`;
+  });
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`attendance_adminview_${today}.csv`;
+  a.click();
+
+  if(!confirm("Reset ADMIN VIEW records for today? (User records will NOT be deleted)")) return;
+
+  // ✅ Only delete ADMIN_PATH (admin view). User Panel data stays safe.
+  await remove(ref(db, ADMIN_PATH));
+
+  showToast("Admin view reset");
+  setScanStatus("🟢 Ready","#2ecc71");
+};
+
+el("printBtn").onclick=()=>window.print();
+</script>
+
+</body>
+  </html>
