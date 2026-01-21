@@ -9,150 +9,288 @@
     :root{
       --accent1:#b76bdc;
       --accent2:#7b38c3;
-      --bg:#f8f6fb;
+      --bg:#f6f4fb;
       --card:#ffffff;
-      --muted:#666;
+      --text:#1f1f1f;
+      --muted:#6c6c6c;
+      --line:rgba(0,0,0,.08);
+      --shadow: 0 14px 30px rgba(25,10,50,.08);
+      --radius: 18px;
     }
 
     *{box-sizing:border-box;}
-
     body{
       margin:0;
-      font-family:Inter,Arial,sans-serif;
-      background:linear-gradient(180deg,var(--bg),#fff);
-      color:#222;
-      padding:12px;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg), #fff);
+      color:var(--text);
+      padding:14px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .container{max-width:1100px;margin:0 auto;}
+    .container{max-width:680px;margin:0 auto;}
+    .muted{color:var(--muted);}
+    .small{font-size:12px;}
+    .center{text-align:center;}
 
+    /* Header (simple, like your screenshot, but cleaner) */
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .hTitle{
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:-.3px;
+      margin:0;
+    }
+    .hLogo{
+      width:44px;height:44px;border-radius:14px;
+      object-fit:contain;
+      background:#fff;
+      border:1px solid var(--line);
+      box-shadow:0 10px 18px rgba(0,0,0,.05);
+    }
+
+    /* Cards */
     .card{
       background:var(--card);
-      border-radius:12px;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
       padding:14px;
-      box-shadow:0 6px 20px rgba(59,20,88,0.05);
       margin-bottom:14px;
     }
 
-    h1{margin:0 0 8px;font-size:22px;}
-
-    /* ------------------------------
-          MAIN GRID (UPDATED)
-       ------------------------------ */
-    #mainGrid{
-      display:grid;
-      grid-template-columns:330px 1fr;
-      gap:14px;
-    }
-
-    @media(max-width:1020px){
-      #mainGrid{grid-template-columns:1fr;}
-      aside{order:1;}     /* PROFILE + QR FIRST */
-      section{order:2;}   /* DASHBOARD BELOW QR */
-    }
-
-    @media(max-width:640px){
-      body{padding:8px;}
-      .card{padding:12px;}
-      h1{font-size:19px;}
-    }
-
-    /* Scrollable Dashboard on Mobile */
-    @media(max-width:640px){
-      #dashboard{
-        max-height:70vh;
-        overflow-y:auto;
-      }
-    }
-
-    /* Forms */
-    label{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:4px;
-    }
-
-    input,select{
-      width:100%;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid rgba(0,0,0,0.1);
-      font-size:15px;
-    }
-
-    button{
-      background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      color:#fff;
-      padding:10px 12px;
-      border-radius:10px;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-      font-size:15px;
-    }
-
-    button.ghost{
-      background:white;
-      color:var(--accent2);
-      border:1px solid rgba(0,0,0,0.1);
-    }
-
-    .row{display:flex;gap:10px;}
-    .col{flex:1;}
-
-    @media(max-width:600px){
-      .row{flex-direction:column;}
-    }
-
     /* Profile */
-    .profile{
+    .profileRow{
       display:flex;
       gap:12px;
       align-items:center;
     }
-
     .avatar{
-      width:60px;
-      height:60px;
-      border-radius:10px;
-      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      width:64px;height:64px;border-radius:18px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:900;font-size:22px;
+      box-shadow:0 14px 22px rgba(123,56,195,.25);
+      flex:0 0 auto;
+      user-select:none;
+    }
+    .pName{font-weight:900;font-size:18px;margin:0;}
+    .pSub{margin:2px 0 0;color:var(--muted);font-weight:700;}
+
+    .btnRow{
       display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-weight:700;
-      font-size:20px;
+      flex-direction:column;
+      gap:10px;
+      margin-top:12px;
     }
 
-    /* Table */
-    table{
+    /* Buttons (smaller + premium, like your screenshot) */
+    .btn{
       width:100%;
-      border-collapse:collapse;
+      border:0;
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:900;
       font-size:14px;
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .15s ease;
+    }
+    .btn:active{transform:scale(.99);}
+
+    .btnPrimary{
+      color:#fff;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      box-shadow:0 12px 20px rgba(123,56,195,.22);
+    }
+    .btnGhost{
+      background:#fff;
+      color:var(--accent2);
+      border:1px solid rgba(0,0,0,.12);
+      box-shadow:none;
+    }
+    .btnDanger{
+      color:#fff;
+      background: linear-gradient(90deg, #d15b7a, #a72e58);
+      box-shadow:0 12px 20px rgba(167,46,88,.18);
     }
 
+    /* QR Section */
+    .sectionTitle{
+      font-size:18px;
+      font-weight:900;
+      margin:0 0 6px;
+      letter-spacing:-.2px;
+    }
+    .sectionDesc{margin:0 0 12px;color:var(--muted);font-weight:700;}
+    .qrFrame{
+      display:flex;
+      justify-content:center;
+      padding:12px;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(123,56,195,.07), rgba(183,107,220,.05));
+      border:1px solid rgba(123,56,195,.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    #qrContainer{
+      background:#fff;
+      padding:10px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow:0 12px 18px rgba(0,0,0,.06);
+    }
+
+    /* Action buttons under QR (two small buttons like your screenshot) */
+    .action2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    /* Dashboard header */
+    .dashTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    /* Compact stats row (not huge tiles) */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:10px 0 12px;
+    }
+    .stat{
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:16px;
+      padding:10px 12px;
+      background: #fff;
+      box-shadow:0 10px 18px rgba(0,0,0,.04);
+    }
+    .statLabel{font-size:12px;color:var(--muted);font-weight:900;}
+    .statValue{font-size:16px;font-weight:900;margin-top:4px;}
+
+    /* Table (horizontal scroll on mobile) */
+    .tableWrap{
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:16px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      position:relative;
+    }
+    table{
+      border-collapse:collapse;
+      width:max-content;     /* stops shrink */
+      min-width:760px;       /* forces horizontal scroll on phones */
+      font-size:13px;
+    }
     th,td{
-      padding:8px;
-      border-bottom:1px solid rgba(0,0,0,0.06);
+      padding:10px 10px;
+      border-bottom:1px solid rgba(0,0,0,.06);
+      white-space:nowrap;
+      text-align:left;
     }
-
     thead th{
       position:sticky;
       top:0;
-      background:white;
-      z-index:1;
+      background:#fff;
+      z-index:3;
+      font-size:11px;
+      color:#444;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+    tbody tr:nth-child(even){background:#faf9fd;}
+    tbody tr:hover{background:#f2ecfb;}
+
+    /* Sticky first column (Date) */
+    th:first-child, td:first-child{
+      position:sticky;
+      left:0;
+      background:#fff;
+      z-index:4;
+      border-right:1px solid rgba(0,0,0,.06);
+    }
+    tbody tr:nth-child(even) td:first-child{background:#faf9fd;}
+
+    /* Swipe hint */
+    .tableWrap::after{
+      content:"Swipe →";
+      position:sticky;
+      top:10px;
+      left: calc(100% - 88px);
+      display:inline-block;
+      margin:10px 10px 0 auto;
+      font-size:11px;
+      font-weight:900;
+      color: rgba(0,0,0,0.45);
+      background: rgba(255,255,255,0.95);
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,0.06);
+      pointer-events:none;
+      z-index:6;
     }
 
-    .table-wrap{
-      overflow:auto;
-      max-height:360px;
-      border-radius:8px;
+    /* Status badge */
+    .status{
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      display:inline-block;
+      border:1px solid rgba(0,0,0,0.06);
+    }
+    .status.complete{ background:#e8f8f0; color:#1e8449; }
+    .status.partial{ background:#fff3cd; color:#856404; }
+    .status.absent{ background:#fdecea; color:#922b21; }
+
+    /* Auth */
+    .authTabs{
+      display:flex;
+      gap:8px;
+      background:rgba(0,0,0,.04);
+      padding:6px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.06);
+      margin-bottom:12px;
+    }
+    .authTab{
+      flex:1;
+      border:0;
+      border-radius:14px;
+      padding:10px;
+      font-weight:900;
+      background:transparent;
+      cursor:pointer;
+    }
+    .authTab.active{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 10px 18px rgba(0,0,0,.06);
     }
 
-    @media(max-width:600px){
-      table{font-size:12px;}
-      th,td{padding:6px;}
+    input,select{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      font-size:14px;
+      outline:none;
+    }
+    input:focus,select:focus{
+      border-color: rgba(123,56,195,.5);
+      box-shadow:0 0 0 4px rgba(123,56,195,.16);
     }
 
     /* Toast */
@@ -161,21 +299,32 @@
       right:12px;
       top:70px;
       padding:10px 14px;
-      border-radius:8px;
+      border-radius:12px;
       color:#fff;
       display:none;
       font-size:14px;
       z-index:9999;
+      box-shadow:0 12px 22px rgba(0,0,0,.15);
     }
     #toast.success{background:#2ecc71;}
     #toast.error{background:#e74c3c;}
 
-    /* QR */
-    #qrBox{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      padding:10px 0;
+    /* Footer */
+    .footer{
+      margin-top:6px;
+      text-align:left;
+      color:var(--muted);
+      font-weight:700;
+      font-size:12px;
+      padding:0 2px;
+    }
+
+    /* Slightly tighter on very small devices */
+    @media(max-width:380px){
+      body{padding:10px;}
+      .hTitle{font-size:20px;}
+      .stats{gap:8px;}
+      .stat{padding:9px 10px;}
     }
   </style>
 </head>
@@ -183,174 +332,180 @@
 <body>
   <div class="container">
 
-    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-      <h1>User Panel — Attendance</h1>
-      <img src="college-logo.png" style="width:48px;height:48px;border-radius:10px;object-fit:contain;">
-    </header>
+    <div class="header">
+      <h1 class="hTitle">User Panel — Attendance</h1>
+      <img src="college-logo.png" class="hLogo" alt="Logo">
+    </div>
 
     <div id="toast"></div>
 
     <!-- AUTH CARD -->
     <div id="authCard" class="card">
-      <div id="authForms">
+      <div class="authTabs">
+        <button class="authTab active" id="tabLogin" type="button">Login</button>
+        <button class="authTab" id="tabCreate" type="button">Create</button>
+      </div>
 
-        <!-- LOGIN -->
-        <div id="loginForm">
-          <h3>Login</h3>
-          <p class="muted" style="margin-top:-4px;">Sign in with email & password</p>
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="sectionTitle" style="margin-bottom:4px;">Login</div>
+        <div class="muted" style="font-weight:700;margin-bottom:10px;">Sign in with email & password</div>
 
-          <label>Email</label>
-          <input id="loginEmail" type="email" placeholder="student@example.edu">
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="student@example.edu">
 
-          <label>Password</label>
-          <input id="loginPass" type="password" placeholder="••••••">
+        <label>Password</label>
+        <input id="loginPass" type="password" placeholder="••••••">
 
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button id="loginBtn">Login</button>
-            <button id="showCreate" class="ghost">Create account</button>
+        <div class="btnRow">
+          <button id="loginBtn" class="btn btnPrimary" type="button">Login</button>
+          <button id="showCreate" class="btn btnGhost" type="button">Create account</button>
+        </div>
+      </div>
+
+      <!-- CREATE -->
+      <div id="createForm" style="display:none;">
+        <div class="sectionTitle" style="margin-bottom:4px;">Create Account</div>
+        <div class="muted" style="font-weight:700;margin-bottom:10px;">Create profile details</div>
+
+        <label>Full name</label>
+        <input id="createName" placeholder="Juan Dela Cruz">
+
+        <label>Email</label>
+        <input id="createEmail" type="email" placeholder="student@example.edu">
+
+        <label>Password</label>
+        <input id="createPass" type="password" placeholder="Choose a password">
+
+        <div class="row" style="margin-top:8px;">
+          <div class="col">
+            <label style="margin-top:0;">Course</label>
+            <input id="createCourse" placeholder="BS Dentistry">
+          </div>
+          <div class="col" style="max-width:140px;">
+            <label style="margin-top:0;">Year level</label>
+            <select id="createYear">
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+            </select>
           </div>
         </div>
 
-        <!-- CREATE ACCOUNT -->
-        <div id="createForm" style="display:none;">
-          <h3>Create Account</h3>
-          <p class="muted" style="margin-top:-4px;">Create profile details</p>
-
-          <label>Full name</label>
-          <input id="createName" placeholder="Juan Dela Cruz">
-
-          <label>Email</label>
-          <input id="createEmail" type="email" placeholder="student@example.edu">
-
-          <label>Password</label>
-          <input id="createPass" type="password" placeholder="Choose a password">
-
-          <div class="row" style="margin-top:8px;">
-            <div class="col">
-              <label>Course</label>
-              <input id="createCourse" placeholder="BS Dentistry">
-            </div>
-            <div class="col" style="max-width:150px;">
-              <label>Year level</label>
-              <select id="createYear">
-                <option>1</option><option>2</option><option>3</option><option>4</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button id="createBtn">Create account</button>
-            <button id="showLogin" class="ghost">Back to login</button>
-          </div>
+        <div class="btnRow">
+          <button id="createBtn" class="btn btnPrimary" type="button">Create account</button>
+          <button id="showLogin" class="btn btnGhost" type="button">Back to login</button>
         </div>
-
       </div>
     </div>
 
-    <!-- MAIN GRID -->
-    <div id="mainGrid">
+    <!-- PROFILE + QR -->
+    <div class="card">
+      <div id="notSigned"><p class="muted" style="margin:0;font-weight:700;">You are not signed in.</p></div>
 
-      <!-- LEFT (PROFILE + QR) -->
-      <aside class="card" id="leftCol">
-
-        <div id="notSigned"><p class="muted">You are not signed in.</p></div>
-
-        <div id="profileView" style="display:none;">
-          <div class="profile">
-            <div class="avatar" id="avatarTxt">U</div>
-            <div>
-              <div id="pname" style="font-weight:700;">Name</div>
-              <div class="muted small" id="pcourse">Course • Year</div>
-            </div>
-          </div>
-
-          <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
-            <button id="editProfileBtn" class="ghost" style="width:100%">Edit profile</button>
-            <button id="signOutBtn" style="width:100%">Sign out</button>
-          </div>
-
-          <hr style="margin:12px 0;">
-
-          <h4 style="margin:0 0 6px;">Your QR Code</h4>
-          <p class="muted small">Show this QR code to Admin Scanner</p>
-
-          <div id="qrBox"><div id="qrContainer"></div></div>
-
-          <div style="display:flex;gap:8px;justify-content:center;margin-top:6px;flex-wrap:wrap;">
-            <button id="timeInBtn">Time In</button>
-            <button id="timeOutBtn" class="ghost">Time Out</button>
-          </div>
-
-          <p class="muted small" id="qrNote">QR loads after login</p>
-        </div>
-
-      </aside>
-
-      <!-- RIGHT COLUMN (DASHBOARD & EDIT CARD) -->
-      <section>
-        <div id="dashboard" class="card" style="display:none;">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
-            <h3 style="margin:0;">Dashboard</h3>
-            <div class="muted small">Last sync: <span id="lastSync">—</span></div>
-          </div>
-
-          <h4 style="margin:12px 0 8px;">Attendance history</h4>
-
-          <div class="table-wrap">
-            <table id="historyTable">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Morning In</th>
-                  <th>Morning Out</th>
-                  <th>Afternoon In</th>
-                  <th>Afternoon Out</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="historyBody">
-                <tr><td colspan="6" class="center muted">No history</td></tr>
-              </tbody>
-            </table>
+      <div id="profileView" style="display:none;">
+        <div class="profileRow">
+          <div class="avatar" id="avatarTxt">U</div>
+          <div>
+            <p class="pName" id="pname">Name</p>
+            <div class="pSub" id="pcourse">Course • Year</div>
           </div>
         </div>
 
-        <div id="editCard" class="card" style="display:none;margin-top:12px;">
-          <h3>Edit profile</h3>
-
-          <label>Full name</label>
-          <input id="editName">
-
-          <label>Course</label>
-          <input id="editCourse">
-
-          <label>Year</label>
-          <select id="editYear">
-            <option>1</option><option>2</option><option>3</option><option>4</option>
-          </select>
-
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button id="saveProfile">Save</button>
-            <button id="cancelEdit" class="ghost">Cancel</button>
-          </div>
+        <div class="btnRow">
+          <button id="editProfileBtn" class="btn btnGhost" type="button">Edit profile</button>
+          <button id="signOutBtn" class="btn btnDanger" type="button">Sign out</button>
         </div>
-      </section>
 
+        <hr style="margin:14px 0;border:none;border-top:1px solid rgba(0,0,0,.08);">
+
+        <div class="sectionTitle">Your QR Code</div>
+        <div class="sectionDesc">Show this QR code to Admin Scanner</div>
+
+        <div class="qrFrame">
+          <div id="qrContainer"></div>
+        </div>
+
+        <div class="action2">
+          <button id="timeInBtn" class="btn btnPrimary" type="button">⏱ Time In</button>
+          <button id="timeOutBtn" class="btn btnGhost" type="button">🚪 Time Out</button>
+        </div>
+
+        <div class="muted" style="font-weight:800;margin-top:10px;" id="qrNote">QR loads after login</div>
+      </div>
     </div>
 
-    <p class="muted small" style="margin-top:10px;">
-      To God be the Glory.
-    </p>
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="card" style="display:none;">
+      <div class="dashTop">
+        <div class="sectionTitle" style="margin:0;">Dashboard</div>
+        <div class="muted" style="font-weight:800;">Last sync: <span id="lastSync">—</span></div>
+      </div>
 
+      <div class="stats">
+        <div class="stat">
+          <div class="statLabel">This month</div>
+          <div class="statValue" id="statMonth">—</div>
+        </div>
+        <div class="stat">
+          <div class="statLabel">Complete</div>
+          <div class="statValue" id="statComplete">—</div>
+        </div>
+        <div class="stat">
+          <div class="statLabel">Partial</div>
+          <div class="statValue" id="statPartial">—</div>
+        </div>
+      </div>
+
+      <div class="sectionTitle" style="margin-top:2px;">Attendance history</div>
+
+      <div class="tableWrap" style="margin-top:10px;">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Morning In</th>
+              <th>Morning Out</th>
+              <th>Afternoon In</th>
+              <th>Afternoon Out</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="6" class="center muted">No history</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EDIT PROFILE -->
+    <div id="editCard" class="card" style="display:none;">
+      <div class="sectionTitle" style="margin-bottom:6px;">Edit profile</div>
+
+      <label>Full name</label>
+      <input id="editName">
+
+      <label>Course</label>
+      <input id="editCourse">
+
+      <label>Year</label>
+      <select id="editYear">
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+      </select>
+
+      <div class="btnRow">
+        <button id="saveProfile" class="btn btnPrimary" type="button">Save</button>
+        <button id="cancelEdit" class="btn btnGhost" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <div class="footer">To God be the Glory.</div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-<script type="module">
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-  import { getDatabase, ref, set, get, onValue } 
+  import { getDatabase, ref, set, get, onValue }
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
@@ -369,79 +524,112 @@
   const db = getDatabase(app);
 
   /* Toast */
-  const toast=document.getElementById('toast');
-  function showToast(msg,type='success'){
-    toast.textContent=msg;
-    toast.className=type;
-    toast.style.display='block';
-    setTimeout(()=>toast.style.display='none',2200);
+  const toast = document.getElementById('toast');
+  function showToast(msg, type='success'){
+    toast.textContent = msg;
+    toast.className = type;
+    toast.style.display = 'block';
+    setTimeout(()=>toast.style.display='none', 2200);
   }
 
   /* Elements */
-  const loginEmail=document.getElementById('loginEmail');
-  const loginPass=document.getElementById('loginPass');
-  const loginBtn=document.getElementById('loginBtn');
-  const showCreate=document.getElementById('showCreate');
-  const createForm=document.getElementById('createForm');
-  const loginForm=document.getElementById('loginForm');
-  const showLogin=document.getElementById('showLogin');
-  const createName=document.getElementById('createName');
-  const createEmail=document.getElementById('createEmail');
-  const createPass=document.getElementById('createPass');
+  const tabLogin   = document.getElementById('tabLogin');
+  const tabCreate  = document.getElementById('tabCreate');
+  const loginForm  = document.getElementById('loginForm');
+  const createForm = document.getElementById('createForm');
+
+  const showCreate = document.getElementById('showCreate');
+  const showLogin  = document.getElementById('showLogin');
+
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPass  = document.getElementById('loginPass');
+  const loginBtn   = document.getElementById('loginBtn');
+
+  const createName = document.getElementById('createName');
+  const createEmail= document.getElementById('createEmail');
+  const createPass = document.getElementById('createPass');
   const createCourse=document.getElementById('createCourse');
-  const createYear=document.getElementById('createYear');
-  const createBtn=document.getElementById('createBtn');
+  const createYear = document.getElementById('createYear');
+  const createBtn  = document.getElementById('createBtn');
 
-  const profileView=document.getElementById('profileView');
-  const pname=document.getElementById('pname');
-  const pcourse=document.getElementById('pcourse');
-  const avatarTxt=document.getElementById('avatarTxt');
-  const notSigned=document.getElementById('notSigned');
-  const dashboard=document.getElementById('dashboard');
-  const historyBody=document.getElementById('historyBody');
-  const lastSync=document.getElementById('lastSync');
-  const editCard=document.getElementById('editCard');
-  const editName=document.getElementById('editName');
-  const editCourse=document.getElementById('editCourse');
-  const editYear=document.getElementById('editYear');
+  const profileView= document.getElementById('profileView');
+  const notSigned  = document.getElementById('notSigned');
+  const dashboard  = document.getElementById('dashboard');
+
+  const pname      = document.getElementById('pname');
+  const pcourse    = document.getElementById('pcourse');
+  const avatarTxt  = document.getElementById('avatarTxt');
+
   const editProfileBtn=document.getElementById('editProfileBtn');
-  const saveProfile=document.getElementById('saveProfile');
-  const cancelEdit=document.getElementById('cancelEdit');
-  const signOutBtn=document.getElementById('signOutBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
 
-  let currentUser=null;
+  const editCard   = document.getElementById('editCard');
+  const editName   = document.getElementById('editName');
+  const editCourse = document.getElementById('editCourse');
+  const editYear   = document.getElementById('editYear');
+  const saveProfile= document.getElementById('saveProfile');
+  const cancelEdit = document.getElementById('cancelEdit');
 
-  /* Auth Switch */
-  showCreate.addEventListener('click',()=>{loginForm.style.display='none';createForm.style.display='block'});
-  showLogin.addEventListener('click',()=>{loginForm.style.display='block';createForm.style.display='none'});
+  const lastSync   = document.getElementById('lastSync');
+  const historyBody= document.getElementById('historyBody');
 
-  createBtn.addEventListener('click',async()=>{
-    const name=createName.value.trim();
-    const email=createEmail.value.trim();
-    const pass=createPass.value;
-    const course=createCourse.value.trim();
-    const year=createYear.value;
+  const statMonth    = document.getElementById('statMonth');
+  const statComplete = document.getElementById('statComplete');
+  const statPartial  = document.getElementById('statPartial');
 
-    if(!name||!email||!pass){
+  const qrNoteEl   = document.getElementById('qrNote');
+  const timeInBtn  = document.getElementById('timeInBtn');
+  const timeOutBtn = document.getElementById('timeOutBtn');
+
+  let currentUser = null;
+
+  /* Auth tabs */
+  function setAuthTab(which){
+    const isLogin = which === 'login';
+    loginForm.style.display  = isLogin ? 'block' : 'none';
+    createForm.style.display = isLogin ? 'none' : 'block';
+
+    tabLogin.classList.toggle('active', isLogin);
+    tabCreate.classList.toggle('active', !isLogin);
+  }
+
+  tabLogin.addEventListener('click', ()=>setAuthTab('login'));
+  tabCreate.addEventListener('click', ()=>setAuthTab('create'));
+  showCreate.addEventListener('click', ()=>setAuthTab('create'));
+  showLogin.addEventListener('click', ()=>setAuthTab('login'));
+
+  /* Create */
+  createBtn.addEventListener('click', async()=>{
+    const name  = createName.value.trim();
+    const email = createEmail.value.trim();
+    const pass  = createPass.value;
+    const course= createCourse.value.trim();
+    const year  = createYear.value;
+
+    if(!name || !email || !pass){
       showToast('Fill required fields','error');
       return;
     }
 
     try{
-      const cred=await createUserWithEmailAndPassword(auth,email,pass);
-      const uid=cred.user.uid;
-      await set(ref(db,`users/${uid}`),{name,course,year,email,created:Date.now()});
+      const cred = await createUserWithEmailAndPassword(auth,email,pass);
+      const uid  = cred.user.uid;
+
+      await set(ref(db,`users/${uid}`),{ name,course,year,email,created:Date.now() });
+
       showToast('Account created');
+      setAuthTab('login');
     }catch(e){
-      showToast(e.message||'Error','error');
+      showToast(e.message || 'Error','error');
     }
   });
 
-  loginBtn.addEventListener('click',async()=>{
-    const email=loginEmail.value.trim();
-    const pass=loginPass.value;
+  /* Login */
+  loginBtn.addEventListener('click', async()=>{
+    const email = loginEmail.value.trim();
+    const pass  = loginPass.value;
 
-    if(!email||!pass){
+    if(!email || !pass){
       showToast('Enter credentials','error');
       return;
     }
@@ -454,30 +642,31 @@
     }
   });
 
-  // Sign Out
+  /* Sign out */
   signOutBtn.addEventListener('click', async()=>{
     await signOut(auth);
     showToast('Signed out');
   });
 
-  // Edit Profile
-  editProfileBtn.addEventListener('click',()=>{
+  /* Edit profile */
+  editProfileBtn.addEventListener('click', ()=>{
     editCard.style.display='block';
     dashboard.style.display='none';
+    window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
   });
 
-  cancelEdit.addEventListener('click',()=>{
+  cancelEdit.addEventListener('click', ()=>{
     editCard.style.display='none';
     dashboard.style.display='block';
   });
 
-  saveProfile.addEventListener('click',async()=>{
-    if(!currentUser)return;
+  saveProfile.addEventListener('click', async()=>{
+    if(!currentUser) return;
 
-    const uid=currentUser.uid;
-    const name=editName.value.trim();
-    const course=editCourse.value.trim();
-    const year=editYear.value;
+    const uid   = currentUser.uid;
+    const name  = editName.value.trim();
+    const course= editCourse.value.trim();
+    const year  = editYear.value;
 
     if(!name){
       showToast('Name required','error');
@@ -485,48 +674,36 @@
     }
 
     try{
-      await set(ref(db,`users/${uid}`),{
-        name,course,year,email:currentUser.email
-      });
+      await set(ref(db,`users/${uid}`),{ name,course,year,email:currentUser.email });
 
       showToast('Saved');
-
       editCard.style.display='none';
       dashboard.style.display='block';
-
       loadProfile(uid);
-
     }catch(e){
       showToast('Save failed','error');
     }
   });
 
-  // Load Profile
+  /* Profile */
   async function loadProfile(uid){
-    try{
-      const snap=await get(ref(db,`users/${uid}`));
+    const snap = await get(ref(db,`users/${uid}`));
+    if(!snap.exists()) return;
 
-      if(snap.exists()){
-        const p=snap.val();
+    const p = snap.val();
+    pname.textContent = p.name || currentUser.email;
+    pcourse.textContent = `${p.course||''} • ${p.year||''}`;
+    avatarTxt.textContent = (p.name||'U').slice(0,1).toUpperCase();
 
-        pname.textContent=p.name||currentUser.email;
-        pcourse.textContent=`${p.course||''} • ${p.year||''}`;
-        avatarTxt.textContent=(p.name||'U').slice(0,1).toUpperCase();
-
-        editName.value=p.name||'';
-        editCourse.value=p.course||'';
-        editYear.value=p.year||'1';
-      }
-    }catch(e){
-      console.error(e);
-    }
+    editName.value = p.name||'';
+    editCourse.value = p.course||'';
+    editYear.value = p.year||'1';
   }
 
   function formatTime(d){
-    if(!d)return '';
-    let h=d.getHours()%12;
-    if(h===0)h=12;
-    let m=String(d.getMinutes()).padStart(2,'0');
+    if(!d) return '';
+    let h = d.getHours()%12; if(h===0) h=12;
+    let m = String(d.getMinutes()).padStart(2,'0');
     return `${h}:${m} ${d.getHours()<12?'AM':'PM'}`;
   }
 
@@ -539,150 +716,138 @@
 
   function renderHistory(rows){
     if(!rows.length){
-      historyBody.innerHTML='<tr><td colspan="6" class="center muted">No history</td></tr>';
+      historyBody.innerHTML = '<tr><td colspan="6" class="center muted">No history</td></tr>';
+      statMonth.textContent='0';
+      statComplete.textContent='0';
+      statPartial.textContent='0';
       return;
     }
 
-    historyBody.innerHTML='';
+    historyBody.innerHTML = '';
 
     for(const item of rows){
-      const r=item.record;
+      const r = item.record;
 
-      const status=
+      const status =
+        (r.morningIn || r.afternoonIn)
+          ? ((r.morningOut || r.afternoonOut) ? 'Complete' : 'Partial')
+          : 'Absent';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHTML(item.date)}</td>
+        <td>${r.morningIn ? formatTime(new Date(r.morningIn)) : ''}</td>
+        <td>${r.morningOut ? formatTime(new Date(r.morningOut)) : ''}</td>
+        <td>${r.afternoonIn ? formatTime(new Date(r.afternoonIn)) : ''}</td>
+        <td>${r.afternoonOut ? formatTime(new Date(r.afternoonOut)) : ''}</td>
+        <td><span class="status ${status.toLowerCase()}">${status}</span></td>
+      `;
+      historyBody.appendChild(tr);
+    }
+
+    // Month stats
+    const monthKey = new Date().toISOString().slice(0,7);
+    const monthRows = rows.filter(x => String(x.date).startsWith(monthKey));
+
+    let c=0,p=0;
+    for(const item of monthRows){
+      const r=item.record;
+      const st =
         (r.morningIn||r.afternoonIn)
           ? ((r.morningOut||r.afternoonOut)?'Complete':'Partial')
           : 'Absent';
-
-      const tr=document.createElement('tr');
-
-      tr.innerHTML=`
-        <td>${escapeHTML(item.date)}</td>
-        <td>${r.morningIn?formatTime(new Date(r.morningIn)):''}</td>
-        <td>${r.morningOut?formatTime(new Date(r.morningOut)):''}</td>
-        <td>${r.afternoonIn?formatTime(new Date(r.afternoonIn)):''}</td>
-        <td>${r.afternoonOut?formatTime(new Date(r.afternoonOut)):''}</td>
-        <td>${status}</td>
-      `;
-
-      historyBody.appendChild(tr);
+      if(st==='Complete') c++;
+      if(st==='Partial') p++;
     }
+
+    statMonth.textContent = String(monthRows.length);
+    statComplete.textContent = String(c);
+    statPartial.textContent = String(p);
   }
 
   function loadAttendanceHistory(uid){
-    const attRef=ref(db,'attendance');
-
-    onValue(attRef,(snapshot)=>{
-      lastSync.textContent=new Date().toLocaleString();
+    onValue(ref(db,'attendance'), (snapshot)=>{
+      lastSync.textContent = new Date().toLocaleString();
 
       if(!snapshot.exists()){
-        historyBody.innerHTML='<tr><td colspan="6" class="center muted">No records</td></tr>';
+        historyBody.innerHTML = '<tr><td colspan="6" class="center muted">No records</td></tr>';
+        statMonth.textContent='0';
+        statComplete.textContent='0';
+        statPartial.textContent='0';
         return;
       }
 
-      const all=snapshot.val();
-      const rows=[];
+      const all = snapshot.val();
+      const rows = [];
 
       for(const dateKey of Object.keys(all).sort().reverse()){
-        const day=all[dateKey];
-        if(day && day[uid]){
-          rows.push({
-            date:dateKey,
-            record:day[uid]
-          });
-        }
+        const day = all[dateKey];
+        if(day && day[uid]) rows.push({ date:dateKey, record:day[uid] });
       }
 
       renderHistory(rows);
     });
   }
 
-  // QR Code
-  function generateUserQR(uid,mode='in'){
-    try{
-      const container=document.getElementById('qrContainer');
-      container.innerHTML='';
+  /* QR */
+  function generateUserQR(uid, mode='in'){
+    const container = document.getElementById('qrContainer');
+    container.innerHTML = '';
+    const data = JSON.stringify({uid,mode});
 
-      const data=JSON.stringify({uid,mode});
+    new QRCode(container,{ text:data, width:200, height:200 });
 
-      new QRCode(container,{
-        text:data,
-        width:180,
-        height:180
-      });
-
-      document.getElementById('qrNote')
-        .textContent=`QR Ready for Time ${mode==='in'?'In':'Out'}`;
-
-    }catch(e){
-      console.error('QR generation failed',e);
-    }
+    qrNoteEl.textContent = `QR Ready for Time ${mode==='in'?'In':'Out'}`;
   }
 
   async function hasTimedInToday(uid){
-    const todayKey=new Date().toISOString().slice(0,10);
-    const snap=await get(ref(db,`attendance/${todayKey}/${uid}`));
+    const todayKey = new Date().toISOString().slice(0,10);
+    const snap = await get(ref(db,`attendance/${todayKey}/${uid}`));
+    if(!snap.exists()) return false;
+    const d = snap.val();
+    return !!(d.morningIn || d.afternoonIn);
+  }
 
-    if(snap.exists()){
-      const data=snap.val();
-      return !!(data.morningIn || data.afternoonIn);
+  timeInBtn.addEventListener('click', ()=>{
+    if(currentUser) generateUserQR(currentUser.uid,'in');
+  });
+
+  timeOutBtn.addEventListener('click', async()=>{
+    if(!currentUser) return;
+    const ok = await hasTimedInToday(currentUser.uid);
+    if(!ok){
+      showToast('You cannot Time Out without Timing In first.','error');
+      return;
     }
-    return false;
-  }
+    generateUserQR(currentUser.uid,'out');
+  });
 
-  const timeInBtn=document.getElementById('timeInBtn');
-  const timeOutBtn=document.getElementById('timeOutBtn');
-
-  if(timeInBtn && timeOutBtn){
-
-    timeInBtn.addEventListener('click',()=>{
-      if(currentUser)
-        generateUserQR(currentUser.uid,'in');
-    });
-
-    timeOutBtn.addEventListener('click',async()=>{
-      if(!currentUser)return;
-
-      const uid=currentUser.uid;
-      const timedIn=await hasTimedInToday(uid);
-
-      if(!timedIn){
-        showToast('You cannot Time Out without Timing In first.','error');
-        return;
-      }
-
-      generateUserQR(uid,'out');
-    });
-  }
-
-  // Auth Listener
-  onAuthStateChanged(auth,async(user)=>{
-    currentUser=user;
+  /* Auth listener */
+  onAuthStateChanged(auth, async(user)=>{
+    currentUser = user;
 
     if(user){
-
+      document.getElementById('authCard').style.display = 'none';
       notSigned.style.display='none';
       profileView.style.display='block';
       dashboard.style.display='block';
-
-      document.getElementById('authCard').style.display='none';
+      editCard.style.display='none';
 
       await loadProfile(user.uid);
       loadAttendanceHistory(user.uid);
       generateUserQR(user.uid,'in');
-
     }else{
-
+      document.getElementById('authCard').style.display = 'block';
       notSigned.style.display='block';
       profileView.style.display='none';
       dashboard.style.display='none';
-
-      document.getElementById('authCard').style.display='block';
+      editCard.style.display='none';
 
       document.getElementById('qrContainer').innerHTML='';
-      document.getElementById('qrNote').textContent='QR loads after login';
+      qrNoteEl.textContent='QR loads after login';
+      setAuthTab('login');
     }
   });
-
 </script>
 
 </body>
