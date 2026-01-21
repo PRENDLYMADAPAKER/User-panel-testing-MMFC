@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dentistry User Panel</title>
+  <title>User Panel — Attendance</title>
 
   <style>
     :root{
@@ -46,16 +46,50 @@
       to{opacity:1; transform:none;}
     }
 
-    h1{margin:0 0 8px;font-size:22px;letter-spacing:-.2px;}
-    h3{letter-spacing:-.2px;}
-    h4{letter-spacing:-.15px;}
-
+    h1,h3,h4{letter-spacing:-.2px;}
     .muted{ color: var(--muted); }
     .small{ font-size: 12px; }
     .center{ text-align:center; }
 
+    /* Topbar */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.75);
+      backdrop-filter: blur(12px);
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow:0 10px 26px rgba(0,0,0,.06);
+    }
+
+    .brandTitle{font-weight:900;font-size:16px;letter-spacing:-.2px;}
+    .brandSub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+    .topbarRight{display:flex;align-items:center;gap:10px;}
+    .logo{
+      width:46px;height:46px;border-radius:12px;
+      object-fit:contain;background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+    }
+
+    .pill{
+      font-size:12px;
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      white-space:nowrap;
+    }
+    .pill.ok{background:#e8f8f0;color:#1e8449;border-color:rgba(30,132,73,.25);}
+    .pill.off{background:#fdecea;color:#922b21;border-color:rgba(146,43,33,.22);}
+
     /* ------------------------------
-          MAIN GRID (UPDATED)
+          MAIN GRID
        ------------------------------ */
     #mainGrid{
       display:grid;
@@ -72,7 +106,6 @@
     @media(max-width:640px){
       body{padding:8px;}
       .card{padding:12px;border-radius:16px;}
-      h1{font-size:19px;}
     }
 
     /* Scrollable Dashboard on Mobile */
@@ -99,7 +132,7 @@
       border:1px solid rgba(0,0,0,0.10);
       font-size:15px;
       outline:none;
-      transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
+      transition: box-shadow .15s ease, border-color .15s ease;
       background:#fff;
     }
 
@@ -115,7 +148,7 @@
       border-radius:12px;
       border:none;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       font-size:15px;
       transition: transform .08s ease, box-shadow .15s ease, opacity .15s ease;
       box-shadow: 0 10px 18px rgba(123,56,195,0.18);
@@ -130,7 +163,7 @@
       color:var(--accent2);
       border:1px solid rgba(0,0,0,0.12);
       box-shadow:none;
-      font-weight:700;
+      font-weight:800;
     }
 
     .row{display:flex;gap:10px;}
@@ -138,6 +171,33 @@
 
     @media(max-width:600px){
       .row{flex-direction:column;}
+    }
+
+    /* Auth segmented tabs */
+    .segTabs{
+      display:flex;
+      gap:8px;
+      background:rgba(0,0,0,.04);
+      padding:6px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.06);
+      margin-bottom:12px;
+    }
+    .segBtn{
+      flex:1;
+      background:transparent;
+      color:#333;
+      border:0;
+      box-shadow:none;
+      font-weight:900;
+      padding:10px;
+      border-radius:12px;
+      cursor:pointer;
+    }
+    .segBtn.active{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 10px 18px rgba(0,0,0,.06);
     }
 
     /* Profile */
@@ -158,7 +218,7 @@
       align-items:center;
       justify-content:center;
       color:#fff;
-      font-weight:800;
+      font-weight:900;
       font-size:20px;
       box-shadow:0 10px 18px rgba(123,56,195,0.28);
       user-select:none;
@@ -170,6 +230,14 @@
       display:flex;
       justify-content:center;
       padding:10px 0;
+    }
+
+    #qrContainer{
+      padding:10px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,0.08);
+      box-shadow:0 12px 22px rgba(0,0,0,.06);
     }
 
     /* Action buttons (Time In / Time Out) */
@@ -200,12 +268,10 @@
     }
 
     @media(max-width:640px){
-      .action-row{ display:none; } /* replaced by sticky bar on mobile */
+      .action-row{ display:none; }
     }
 
-    .action-bar{
-      display:none;
-    }
+    .action-bar{ display:none; }
 
     @media(max-width:640px){
       .action-bar{
@@ -222,6 +288,26 @@
         margin-top:10px;
         z-index:6;
       }
+    }
+
+    /* Quick stats */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:12px 0 8px;
+    }
+    .stat{
+      padding:12px;
+      border-radius:14px;
+      background:linear-gradient(180deg, rgba(123,56,195,.10), rgba(183,107,220,.06));
+      border:1px solid rgba(123,56,195,.14);
+    }
+    .statLabel{font-size:12px;color:var(--muted);font-weight:900;}
+    .statValue{font-size:18px;font-weight:900;margin-top:4px;letter-spacing:-.2px;}
+
+    @media(max-width:640px){
+      .stats{grid-template-columns:1fr;}
     }
 
     /* Table */
@@ -241,7 +327,7 @@
       position:sticky;
       top:0;
       background:white;
-      z-index:1;
+      z-index:3;
       font-size:12px;
       color:#444;
       text-transform:uppercase;
@@ -251,21 +337,60 @@
     tbody tr:nth-child(even){
       background:#faf9fd;
     }
-
     tbody tr:hover{
       background:#f1ecfa;
     }
 
+    /* Horizontal scroll wrapper */
     .table-wrap{
-      overflow:auto;
+      overflow-x:auto;
+      overflow-y:auto;
       max-height:360px;
       border-radius:10px;
       border:1px solid rgba(0,0,0,0.06);
+      -webkit-overflow-scrolling: touch;
+      position:relative;
     }
+
+    /* force horizontal scroll on mobile (instead of compressing columns) */
+    #historyTable{ min-width: 760px; }
 
     @media(max-width:600px){
       table{font-size:12px;}
       th,td{padding:7px;}
+    }
+
+    /* Swipe hint (mobile only) */
+    @media (max-width:640px){
+      .table-wrap::after{
+        content:"Swipe →";
+        position:absolute;
+        top:8px;
+        right:10px;
+        font-size:11px;
+        font-weight:900;
+        color: rgba(0,0,0,0.45);
+        background: rgba(255,255,255,0.9);
+        padding:4px 8px;
+        border-radius:999px;
+        border:1px solid rgba(0,0,0,0.06);
+        pointer-events:none;
+        z-index:5;
+      }
+
+      /* Sticky first column (Date) */
+      #historyTable th:first-child,
+      #historyTable td:first-child{
+        position: sticky;
+        left: 0;
+        background: white;
+        z-index: 4;
+        border-right:1px solid rgba(0,0,0,0.06);
+      }
+
+      #historyTable tbody tr:nth-child(even) td:first-child{
+        background:#faf9fd;
+      }
     }
 
     /* Status badges */
@@ -273,7 +398,7 @@
       padding:4px 10px;
       border-radius:999px;
       font-size:12px;
-      font-weight:800;
+      font-weight:900;
       display:inline-block;
       border:1px solid rgba(0,0,0,0.06);
     }
@@ -302,12 +427,17 @@
 <body>
   <div class="container">
 
-    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-      <div>
-        <h1>Dentistry User Panel</h1>
-        <div class="muted small">🦷</div>
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brandTitle">User Panel</div>
+        <div class="brandSub">Attendance</div>
       </div>
-      <img src="college-logo.png" style="width:48px;height:48px;border-radius:12px;object-fit:contain;">
+
+      <div class="topbarRight">
+        <span class="pill off" id="authPill">Signed out</span>
+        <img src="college-logo.png" class="logo" alt="Logo">
+      </div>
     </header>
 
     <div id="toast"></div>
@@ -315,6 +445,11 @@
     <!-- AUTH CARD -->
     <div id="authCard" class="card">
       <div id="authForms">
+
+        <div class="segTabs">
+          <button class="segBtn active" id="tabLogin" type="button">Login</button>
+          <button class="segBtn" id="tabCreate" type="button">Create</button>
+        </div>
 
         <!-- LOGIN -->
         <div id="loginForm">
@@ -328,8 +463,8 @@
           <input id="loginPass" type="password" placeholder="••••••">
 
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button id="loginBtn">Login</button>
-            <button id="showCreate" class="ghost">Create account</button>
+            <button id="loginBtn" type="button">Login</button>
+            <button id="showCreate" class="ghost" type="button">Create account</button>
           </div>
         </div>
 
@@ -361,8 +496,8 @@
           </div>
 
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button id="createBtn">Create account</button>
-            <button id="showLogin" class="ghost">Back to login</button>
+            <button id="createBtn" type="button">Create account</button>
+            <button id="showLogin" class="ghost" type="button">Back to login</button>
           </div>
         </div>
 
@@ -381,14 +516,14 @@
           <div class="profile">
             <div class="avatar" id="avatarTxt">U</div>
             <div>
-              <div id="pname" style="font-weight:800;font-size:16px;">Name</div>
+              <div id="pname" style="font-weight:900;font-size:16px;">Name</div>
               <div class="muted small" id="pcourse">Course • Year</div>
             </div>
           </div>
 
           <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
-            <button id="editProfileBtn" class="ghost" style="width:100%">Edit profile</button>
-            <button id="signOutBtn" style="width:100%">Sign out</button>
+            <button id="editProfileBtn" class="ghost" type="button" style="width:100%">Edit profile</button>
+            <button id="signOutBtn" type="button" style="width:100%">Sign out</button>
           </div>
 
           <hr style="margin:12px 0;border:none;border-top:1px solid rgba(0,0,0,0.06);">
@@ -398,21 +533,21 @@
               <h4 style="margin:0 0 6px;">Your QR Code</h4>
               <p class="muted small" style="margin:0;">Show this QR code to Admin Scanner</p>
             </div>
-            <div class="muted small" id="qrNote" style="font-weight:700;">QR loads after login</div>
+            <div class="muted small" id="qrNote" style="font-weight:900;">QR loads after login</div>
           </div>
 
           <div id="qrBox"><div id="qrContainer"></div></div>
 
           <!-- Desktop/Tablet action row -->
           <div class="action-row">
-            <button id="timeInBtn" class="action-btn">⏱ Time In</button>
-            <button id="timeOutBtn" class="action-btn out">🚪 Time Out</button>
+            <button id="timeInBtn" class="action-btn" type="button">⏱ Time In</button>
+            <button id="timeOutBtn" class="action-btn out" type="button">🚪 Time Out</button>
           </div>
 
           <!-- Mobile sticky action bar -->
           <div class="action-bar">
-            <button id="timeInBtnMobile" class="action-btn">⏱ Time In</button>
-            <button id="timeOutBtnMobile" class="action-btn out">🚪 Time Out</button>
+            <button id="timeInBtnMobile" class="action-btn" type="button">⏱ Time In</button>
+            <button id="timeOutBtnMobile" class="action-btn out" type="button">🚪 Time Out</button>
           </div>
         </div>
 
@@ -426,7 +561,23 @@
             <div class="muted small">Last sync: <span id="lastSync">—</span></div>
           </div>
 
-          <h4 style="margin:12px 0 8px;">Attendance history</h4>
+          <!-- Quick Stats -->
+          <div class="stats">
+            <div class="stat">
+              <div class="statLabel">This month</div>
+              <div class="statValue" id="statMonth">—</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Complete</div>
+              <div class="statValue" id="statComplete">—</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Partial</div>
+              <div class="statValue" id="statPartial">—</div>
+            </div>
+          </div>
+
+          <h4 style="margin:10px 0 8px;">Attendance history</h4>
 
           <div class="table-wrap">
             <table id="historyTable">
@@ -462,8 +613,8 @@
           </select>
 
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button id="saveProfile">Save</button>
-            <button id="cancelEdit" class="ghost">Cancel</button>
+            <button id="saveProfile" type="button">Save</button>
+            <button id="cancelEdit" class="ghost" type="button">Cancel</button>
           </div>
         </div>
       </section>
@@ -510,13 +661,21 @@
   }
 
   /* Elements */
+  const authPill  = document.getElementById('authPill');
+
   const loginEmail = document.getElementById('loginEmail');
   const loginPass  = document.getElementById('loginPass');
   const loginBtn   = document.getElementById('loginBtn');
+
   const showCreate = document.getElementById('showCreate');
+  const showLogin  = document.getElementById('showLogin');
+
+  const tabLogin   = document.getElementById('tabLogin');
+  const tabCreate  = document.getElementById('tabCreate');
+
   const createForm = document.getElementById('createForm');
   const loginForm  = document.getElementById('loginForm');
-  const showLogin  = document.getElementById('showLogin');
+
   const createName = document.getElementById('createName');
   const createEmail= document.getElementById('createEmail');
   const createPass = document.getElementById('createPass');
@@ -532,6 +691,7 @@
   const dashboard  = document.getElementById('dashboard');
   const historyBody= document.getElementById('historyBody');
   const lastSync   = document.getElementById('lastSync');
+
   const editCard   = document.getElementById('editCard');
   const editName   = document.getElementById('editName');
   const editCourse = document.getElementById('editCourse');
@@ -551,18 +711,29 @@
   const timeInBtnMobile  = document.getElementById('timeInBtnMobile');
   const timeOutBtnMobile = document.getElementById('timeOutBtnMobile');
 
+  // Stats
+  const statMonth    = document.getElementById('statMonth');
+  const statComplete = document.getElementById('statComplete');
+  const statPartial  = document.getElementById('statPartial');
+
   let currentUser = null;
 
-  /* Auth Switch */
-  showCreate.addEventListener('click', ()=>{
-    loginForm.style.display='none';
-    createForm.style.display='block';
-  });
+  /* Auth Tabs */
+  function setAuthTab(which){
+    const isLogin = which === 'login';
+    loginForm.style.display  = isLogin ? 'block' : 'none';
+    createForm.style.display = isLogin ? 'none' : 'block';
 
-  showLogin.addEventListener('click', ()=>{
-    loginForm.style.display='block';
-    createForm.style.display='none';
-  });
+    tabLogin?.classList.toggle('active', isLogin);
+    tabCreate?.classList.toggle('active', !isLogin);
+  }
+
+  tabLogin?.addEventListener('click', ()=>setAuthTab('login'));
+  tabCreate?.addEventListener('click', ()=>setAuthTab('create'));
+
+  // Keep the old buttons working too
+  showCreate?.addEventListener('click', ()=>setAuthTab('create'));
+  showLogin?.addEventListener('click', ()=>setAuthTab('login'));
 
   createBtn.addEventListener('click', async()=>{
     const name  = createName.value.trim();
@@ -585,6 +756,7 @@
       });
 
       showToast('Account created');
+      setAuthTab('login');
     }catch(e){
       showToast(e.message || 'Error','error');
     }
@@ -692,6 +864,9 @@
   function renderHistory(rows){
     if(!rows.length){
       historyBody.innerHTML = '<tr><td colspan="6" class="center muted">No history</td></tr>';
+      if(statMonth) statMonth.textContent = '0';
+      if(statComplete) statComplete.textContent = '0';
+      if(statPartial) statPartial.textContent = '0';
       return;
     }
 
@@ -705,7 +880,7 @@
           ? ((r.morningOut || r.afternoonOut) ? 'Complete' : 'Partial')
           : 'Absent';
 
-      const statusClass = status.toLowerCase(); // complete / partial / absent
+      const statusClass = status.toLowerCase();
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -716,8 +891,29 @@
         <td>${r.afternoonOut ? formatTime(new Date(r.afternoonOut)) : ''}</td>
         <td><span class="status ${statusClass}">${status}</span></td>
       `;
-
       historyBody.appendChild(tr);
+    }
+
+    // Stats for current month
+    if(statMonth && statComplete && statPartial){
+      const now = new Date();
+      const monthKey = now.toISOString().slice(0,7); // YYYY-MM
+      const monthRows = rows.filter(x => String(x.date).startsWith(monthKey));
+
+      let c=0,p=0;
+      for(const item of monthRows){
+        const r=item.record;
+        const st =
+          (r.morningIn||r.afternoonIn)
+            ? ((r.morningOut||r.afternoonOut)?'Complete':'Partial')
+            : 'Absent';
+        if(st==='Complete') c++;
+        if(st==='Partial') p++;
+      }
+
+      statMonth.textContent = String(monthRows.length);
+      statComplete.textContent = String(c);
+      statPartial.textContent = String(p);
     }
   }
 
@@ -729,6 +925,9 @@
 
       if(!snapshot.exists()){
         historyBody.innerHTML = '<tr><td colspan="6" class="center muted">No records</td></tr>';
+        if(statMonth) statMonth.textContent = '0';
+        if(statComplete) statComplete.textContent = '0';
+        if(statPartial) statPartial.textContent = '0';
         return;
       }
 
@@ -817,6 +1016,11 @@
       dashboard.style.display='block';
       document.getElementById('authCard').style.display='none';
 
+      if(authPill){
+        authPill.textContent = 'Signed in';
+        authPill.className = 'pill ok';
+      }
+
       await loadProfile(user.uid);
       loadAttendanceHistory(user.uid);
       generateUserQR(user.uid,'in');
@@ -827,8 +1031,16 @@
       dashboard.style.display='none';
       document.getElementById('authCard').style.display='block';
 
+      if(authPill){
+        authPill.textContent = 'Signed out';
+        authPill.className = 'pill off';
+      }
+
       document.getElementById('qrContainer').innerHTML = '';
       if(qrNoteEl) qrNoteEl.textContent = 'QR loads after login';
+
+      // reset to login tab when signed out
+      setAuthTab('login');
     }
   });
 </script>
