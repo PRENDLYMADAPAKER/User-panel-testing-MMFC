@@ -28,9 +28,8 @@
 
     *{box-sizing:border-box;}
 
-    /* ✅ stop page stretching */
-    html,body{max-width:100%; overflow-x:hidden;}
-
+    /* ✅ Fit-to-mobile: don't allow layout wider than screen */
+    html, body { width:100%; max-width:100%; overflow-x: clip; } /* clip is safer than hidden */
     body{
       margin:0;
       font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -42,11 +41,7 @@
       padding:14px;
     }
 
-    .container{
-      max-width:1120px;
-      margin:0 auto;
-      width:100%;
-    }
+    .container{ max-width:1120px; margin:0 auto; width:100%; }
 
     /* Topbar */
     .topbar{
@@ -54,7 +49,7 @@
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding:14px 14px;
+      padding:14px;
       border:1px solid var(--border);
       background:rgba(255,255,255,0.82);
       backdrop-filter: blur(10px);
@@ -104,13 +99,7 @@
       text-overflow:ellipsis;
     }
 
-    .topbar-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex:0 0 auto;
-      max-width:100%;
-    }
+    .topbar-right{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
 
     .schoolLogo{
       width:44px;height:44px;
@@ -129,6 +118,7 @@
       padding:14px;
       box-shadow: var(--shadow);
       max-width:100%;
+      min-width:0;
     }
 
     .muted{color:var(--muted);}
@@ -143,8 +133,8 @@
       gap:14px;
       align-items:start;
       max-width:100%;
+      min-width:0;
     }
-
     @media(max-width:1020px){
       #mainGrid{grid-template-columns:1fr;}
     }
@@ -167,6 +157,7 @@
       background:#fff;
       transition:.15s;
       max-width:100%;
+      min-width:0;
     }
     input:focus,select:focus{
       border-color: rgba(123,56,195,0.55);
@@ -195,11 +186,7 @@
       border:1px solid var(--border);
       box-shadow:none;
     }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      transform:none;
-    }
+    button:disabled{opacity:.55; cursor:not-allowed; transform:none;}
 
     .btnRow{
       display:flex;
@@ -208,24 +195,21 @@
       flex-wrap:wrap;
       width:100%;
       max-width:100%;
+      min-width:0;
     }
-    /* ✅ critical: allow buttons to shrink (prevents off-screen) */
     .btnRow > button{
-      flex: 1 1 0;
-      min-width: 0;
+      flex:1 1 0;
+      min-width:0; /* ✅ prevents off-screen button */
     }
 
     /* Auth */
-    #authCard{
-      margin-bottom:14px;
-    }
+    #authCard{ margin-bottom:14px; }
     .authHeader{
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
-      max-width:100%;
     }
     .tag{
       display:inline-flex;
@@ -238,16 +222,10 @@
       background:#fff;
       color:var(--muted);
       white-space:nowrap;
-      max-width:100%;
     }
 
-    /* Profile section */
-    .profile{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      max-width:100%;
-    }
+    /* Profile */
+    .profile{ display:flex; gap:12px; align-items:center; }
     .avatar{
       width:54px;height:54px;
       border-radius:16px;
@@ -260,10 +238,7 @@
       font-size:18px;
       flex:0 0 auto;
     }
-    .profileMeta{
-      min-width:0;
-      max-width:100%;
-    }
+    .profileMeta{ min-width:0; }
     .profileMeta .name{
       font-weight:900;
       font-size:15px;
@@ -280,11 +255,7 @@
       text-overflow:ellipsis;
     }
 
-    .divider{
-      height:1px;
-      background:rgba(0,0,0,0.06);
-      margin:12px 0;
-    }
+    .divider{ height:1px; background:rgba(0,0,0,0.06); margin:12px 0; }
 
     /* Stats */
     .stats{
@@ -292,7 +263,6 @@
       grid-template-columns:1fr 1fr 1fr;
       gap:10px;
       margin-top:10px;
-      max-width:100%;
     }
     .stat{
       border:1px solid var(--border);
@@ -300,7 +270,6 @@
       padding:10px;
       background:#fff;
       min-width:0;
-      max-width:100%;
     }
     .stat .k{font-size:11px;color:var(--muted);}
     .stat .v{
@@ -315,35 +284,38 @@
       .stats{grid-template-columns:1fr;}
     }
 
-    /* QR */
+    /* QR (✅ FULL FIX) */
     #qrBox{
       width:100%;
       display:flex;
       justify-content:center;
       align-items:center;
       padding:10px 0 0;
-      overflow:hidden; /* ✅ prevents pushing layout */
       max-width:100%;
+      min-width:0;
     }
+
+    /* We will set width in JS to match available space */
     #qrContainer{
       background:#fff;
       border-radius:18px;
       padding:12px;
       border:1px dashed rgba(123,56,195,0.45);
       box-shadow:0 10px 25px rgba(123,56,195,.10);
-      max-width:100%;
-      width: fit-content;
       display:flex;
       justify-content:center;
       align-items:center;
+      margin:0 auto;
+      max-width:100%;
     }
-    /* qrcodejs outputs img or canvas */
-    #qrContainer img, #qrContainer canvas{
-      display:block;
-      max-width: 78vw;   /* ✅ responsive */
-      max-height: 78vw;
-      width:auto;
-      height:auto;
+
+    /* ✅ Force QR output to be responsive even if qrcodejs sets inline width/height */
+    #qrContainer img,
+    #qrContainer canvas{
+      display:block !important;
+      width:100% !important;
+      height:auto !important;
+      max-width:100% !important;
     }
 
     .modePill{
@@ -367,7 +339,7 @@
     .dot.in{background:var(--ok); box-shadow:0 0 0 4px rgba(46,204,113,.16);}
     .dot.out{background:var(--accent2); box-shadow:0 0 0 4px rgba(123,56,195,.16);}
 
-    /* ✅ Table scrolls INSIDE its box (no page stretch) */
+    /* Table */
     .tableWrap{
       width:100%;
       overflow-x:auto;
@@ -383,7 +355,7 @@
       width:100%;
       border-collapse:collapse;
       font-size:13px;
-      min-width:760px; /* desktop baseline */
+      min-width:760px;
     }
     th,td{
       padding:10px 10px;
@@ -411,7 +383,6 @@
       font-weight:800;
       border:1px solid var(--border);
       background:#fff;
-      max-width:100%;
     }
     .pill.ok{color:var(--ok); border-color:rgba(46,204,113,.35); background:rgba(46,204,113,.08);}
     .pill.warn{color:var(--warn); border-color:rgba(243,156,18,.35); background:rgba(243,156,18,.08);}
@@ -434,7 +405,6 @@
     #toast.success{background:var(--ok);}
     #toast.error{background:var(--bad);}
 
-    /* Footer */
     .footerNote{
       margin-top:10px;
       text-align:center;
@@ -442,7 +412,6 @@
       font-size:12px;
     }
 
-    /* ✅ Mobile tweaks */
     @media(max-width:640px){
       body{padding:10px;}
       .topbar{padding:12px; flex-wrap:wrap;}
@@ -450,17 +419,9 @@
       .card{padding:12px;}
       table{min-width:640px;}
     }
-
     @media(max-width:420px){
-      /* stack buttons on very small phones */
       .btnRow{flex-direction:column;}
       table{min-width:600px;}
-    }
-
-    /* ✅ Make sure key containers never force width */
-    #leftCol, #dashboard, #editCard, .card, .container, #mainGrid {
-      max-width: 100%;
-      min-width: 0;
     }
   </style>
 </head>
@@ -548,7 +509,7 @@
     <!-- MAIN GRID -->
     <div id="mainGrid">
 
-      <!-- LEFT (PROFILE + QR) -->
+      <!-- LEFT -->
       <aside class="card" id="leftCol">
 
         <div id="notSigned">
@@ -616,7 +577,7 @@
 
       </aside>
 
-      <!-- RIGHT COLUMN (DASHBOARD & EDIT CARD) -->
+      <!-- RIGHT -->
       <section>
 
         <div id="dashboard" class="card" style="display:none;">
@@ -765,6 +726,9 @@
   const statLast=el('statLast');
   const statTotal=el('statTotal');
 
+  const qrContainer = el('qrContainer');
+  const leftCol = el('leftCol');
+
   let currentUser=null;
 
   /* Auth Switch */
@@ -868,7 +832,6 @@
         pcourse.textContent=`${p.course||''} • Year ${p.year||''}`;
         avatarTxt.textContent=(p.name||'U').slice(0,1).toUpperCase();
 
-        // brand icon initials
         el('brandIcon').textContent =
           (p.name||'UP').split(' ').slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('').slice(0,2) || 'UP';
 
@@ -1000,23 +963,40 @@
     });
   }
 
-  /* ✅ QR Code (RESPONSIVE SIZE) */
+  /* ✅ QR Code: compute size from the actual card width */
+  function computeQRSize(){
+    const cardWidth = leftCol ? leftCol.clientWidth : window.innerWidth;
+    // subtract padding + allow safe margin
+    const usable = Math.max(180, cardWidth - 48);
+    return Math.min(280, usable); // cap so it doesn't get too huge
+  }
+
+  function forceQRResponsive(){
+    // qrcodejs may output <img> or <canvas> with inline width/height — force them to fit
+    const node = qrContainer.querySelector('img,canvas');
+    if(!node) return;
+    node.style.width = '100%';
+    node.style.height = 'auto';
+    node.style.display = 'block';
+  }
+
   function generateUserQR(uid,mode='in'){
     try{
-      const container=el('qrContainer');
-      container.innerHTML='';
+      qrContainer.innerHTML='';
 
       const data=JSON.stringify({uid,mode});
+      const size = computeQRSize();
 
-      // ✅ responsive size: fits phone width
-      const size = Math.min(240, Math.floor(window.innerWidth * 0.70));
+      // Set container width so QR never exceeds card
+      qrContainer.style.width = size + 'px';
 
-      new QRCode(container,{
+      new QRCode(qrContainer,{
         text:data,
         width:size,
         height:size
       });
 
+      forceQRResponsive();
       setMode(mode);
 
     }catch(e){
@@ -1058,7 +1038,6 @@
     });
   }
 
-  /* Auth Listener */
   onAuthStateChanged(auth,async(user)=>{
     currentUser=user;
 
@@ -1081,7 +1060,8 @@
 
       el('authCard').style.display='block';
 
-      el('qrContainer').innerHTML='';
+      qrContainer.innerHTML='';
+      qrContainer.style.width = '';
       el('qrNote').textContent='QR loads after login';
 
       el('subTitle').textContent='Login to generate your QR code & view history';
@@ -1094,14 +1074,14 @@
     }
   });
 
-  // ✅ Re-generate QR on orientation change / resize to keep it fitting
+  // ✅ Refit QR on resize / rotate
   window.addEventListener('resize', ()=>{
     if(currentUser){
-      // keep current mode text based on pill
       const mode = (modeText.textContent||'').toLowerCase().includes('out') ? 'out' : 'in';
       generateUserQR(currentUser.uid, mode);
     }
   }, {passive:true});
+
 </script>
 
 </body>
